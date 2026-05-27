@@ -5,7 +5,7 @@ Librería JavaScript vanilla (sin frameworks) como alternativa ligera a SweetAle
 ## Instalación
 
 ```html
-<script src="https://TU_USUARIO.github.io/auralert/dist/auralert.min.js"></script>
+<script src="https://ovejero92.github.io/Auralert/dist/auralert.min.js"></script>
 ```
 
 Reemplazá `TU_USUARIO` por tu usuario de GitHub una vez publicado en GitHub Pages.
@@ -101,7 +101,7 @@ Retorna `Promise<boolean>` — `true` si confirmó, `false` si canceló o cerró
 
 ```html
 <!-- base.html -->
-<script src="https://TU_USUARIO.github.io/auralert/dist/auralert.min.js"></script>
+<script src="https://ovejero92.github.io/Auralert/dist/auralert.min.js"></script>
 ```
 
 ```django
