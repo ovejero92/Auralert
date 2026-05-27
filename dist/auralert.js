@@ -505,11 +505,28 @@
     resolveTheme();
   }
 
+  function makeContainerKey(className, attrs) {
+    if (!attrs || !Object.keys(attrs).length) return className;
+    var parts = [className];
+    Object.keys(attrs).sort().forEach(function (k) {
+      parts.push(k + '-' + String(attrs[k]));
+    });
+    return parts.join('--');
+  }
+
+  function findContainer(root, key) {
+    var nodes = root.querySelectorAll('[data-aa-container]');
+    for (var i = 0; i < nodes.length; i++) {
+      if (nodes[i].getAttribute('data-aa-container') === key) return nodes[i];
+    }
+    return null;
+  }
+
   function getContainer(className, attrs) {
     init();
     var root = ensureRoot();
-    var key = className + JSON.stringify(attrs || {});
-    var existing = root.querySelector('[data-aa-container="' + key + '"]');
+    var key = makeContainerKey(className, attrs);
+    var existing = findContainer(root, key);
     if (existing) return existing;
 
     var el = document.createElement('div');
