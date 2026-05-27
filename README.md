@@ -5,10 +5,12 @@ Librería JavaScript vanilla (sin frameworks) como alternativa ligera a SweetAle
 ## Instalación
 
 ```html
+<!-- Recomendado: GitHub Pages -->
 <script src="https://ovejero92.github.io/Auralert/dist/auralert.min.js"></script>
-```
 
-Reemplazá `TU_USUARIO` por tu usuario de GitHub una vez publicado en GitHub Pages.
+<!-- Alternativa CDN (usar tag, no @main: jsDelivr cachea main) -->
+<!-- <script src="https://cdn.jsdelivr.net/gh/ovejero92/Auralert@1.0.1/dist/auralert.min.js"></script> -->
+```
 
 ## Uso rápido
 

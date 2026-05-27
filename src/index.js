@@ -393,7 +393,7 @@
     notify: notify,
     setTheme: setTheme,
     getTheme: getTheme,
-    version: '1.0.0'
+    version: '1.0.1'
   };
 
   if (typeof module !== 'undefined' && module.exports) {
