@@ -3,351 +3,524 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Auralert — Demo</title>
+  <title>Auralert — Documentación y demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --page-bg: #f8fafc;
+      --card: #fff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --accent: #6366f1;
+      --accent-soft: #eef2ff;
+    }
     * { box-sizing: border-box; }
     body {
-      font-family: system-ui, sans-serif;
       margin: 0;
-      padding: 24px;
-      background: #f1f5f9;
-      color: #0f172a;
-      line-height: 1.5;
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--page-bg);
+      color: var(--text);
+      line-height: 1.6;
     }
-    body.dark-demo { background: #0f172a; color: #e2e8f0; }
-    .wrap { max-width: 900px; margin: 0 auto; }
-    h1 { font-size: 2rem; margin-bottom: 0.25rem; }
-    .subtitle { color: #64748b; margin-bottom: 2rem; }
-    body.dark-demo .subtitle { color: #94a3b8; }
-    section {
-      background: #fff;
-      border-radius: 12px;
-      padding: 1.5rem;
-      margin-bottom: 1.5rem;
-      box-shadow: 0 1px 3px rgba(0,0,0,.08);
+    body.page-dark {
+      --page-bg: #0f172a;
+      --card: #1e293b;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --border: #334155;
+      --accent-soft: #312e81;
     }
-    body.dark-demo section { background: #1e293b; }
-    h2 { font-size: 1.15rem; margin-top: 0; border-bottom: 1px solid #e2e8f0; padding-bottom: 0.5rem; }
-    body.dark-demo h2 { border-color: #334155; }
-    .btn-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 1rem; }
-    button.demo-btn {
-      padding: 8px 14px;
-      border-radius: 8px;
-      border: 1px solid #cbd5e1;
-      background: #fff;
-      cursor: pointer;
-      font-size: 13px;
-    }
-    body.dark-demo button.demo-btn { background: #334155; border-color: #475569; color: #f1f5f9; }
-    button.demo-btn:hover { background: #f8fafc; }
-    button.demo-btn.success { border-color: #10b981; color: #059669; }
-    button.demo-btn.error { border-color: #ef4444; color: #dc2626; }
-    button.demo-btn.warning { border-color: #f59e0b; color: #d97706; }
-    button.demo-btn.info { border-color: #6366f1; color: #4f46e5; }
-    button.theme-toggle {
-      position: fixed;
-      top: 16px;
-      right: 16px;
-      z-index: 1;
-      padding: 10px 16px;
-      border-radius: 8px;
-      border: none;
-      background: #0f172a;
+    .hero {
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
       color: #fff;
-      cursor: pointer;
-      font-weight: 500;
+      padding: 3rem 1.5rem 4rem;
+      text-align: center;
     }
+    .hero h1 { font-size: clamp(2rem, 5vw, 2.75rem); margin: 0 0 0.5rem; }
+    .hero p { max-width: 640px; margin: 0 auto; opacity: 0.95; font-size: 1.05rem; }
+    .container { max-width: 960px; margin: -2rem auto 3rem; padding: 0 1.25rem; }
+    section.card {
+      background: var(--card);
+      border-radius: 14px;
+      padding: 1.75rem;
+      margin-bottom: 1.25rem;
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 24px rgba(0,0,0,.06);
+    }
+    section.card h2 {
+      margin: 0 0 1rem;
+      font-size: 1.25rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 1px solid var(--border);
+    }
+    section.card h3 { font-size: 1rem; margin: 1.25rem 0 0.5rem; color: var(--muted); }
     pre {
       background: #0f172a;
       color: #e2e8f0;
-      padding: 1rem;
-      border-radius: 8px;
+      padding: 1rem 1.1rem;
+      border-radius: 10px;
       overflow-x: auto;
       font-size: 12px;
-      margin: 0;
+      line-height: 1.5;
+      margin: 0.75rem 0;
     }
-    code { font-family: ui-monospace, monospace; }
-    .label { font-size: 12px; color: #64748b; margin-bottom: 6px; }
-    body.dark-demo .label { color: #94a3b8; }
-    .django-block { margin-top: 1rem; }
+    code { font-family: ui-monospace, 'Cascadia Code', monospace; font-size: 0.92em; }
+    p.hint { color: var(--muted); font-size: 0.9rem; margin: 0.5rem 0; }
+    .cdn-grid { display: grid; gap: 0.75rem; }
+    @media (min-width: 600px) { .cdn-grid { grid-template-columns: 1fr 1fr; } }
+    .tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 1rem; }
+    .tab {
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--page-bg);
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      font-family: inherit;
+      color: var(--text);
+    }
+    .tab:hover { border-color: var(--accent); }
+    .tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .panel { display: none; }
+    .panel.active { display: block; }
+    .btn-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 0.75rem 0; }
+    .demo-btn {
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      cursor: pointer;
+      font-size: 13px;
+      font-family: inherit;
+      color: var(--text);
+    }
+    .demo-btn:hover { border-color: var(--accent); }
+    .demo-btn.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .demo-btn.success { border-color: #10b981; color: #059669; }
+    .demo-btn.error { border-color: #ef4444; color: #dc2626; }
+    .demo-btn.warning { border-color: #f59e0b; color: #d97706; }
+    .float-theme {
+      position: fixed; top: 16px; right: 16px; z-index: 10;
+      padding: 10px 14px; border-radius: 8px; border: none;
+      background: rgba(15,23,42,.85); color: #fff; cursor: pointer;
+      font-family: inherit; font-size: 13px;
+    }
+    .badge {
+      display: inline-block; font-size: 11px; font-weight: 600;
+      padding: 2px 8px; border-radius: 99px;
+      background: var(--accent-soft); color: var(--accent);
+    }
+    .pro-box {
+      background: var(--accent-soft);
+      border-radius: 10px;
+      padding: 1rem 1.25rem;
+      margin-top: 1rem;
+      font-size: 0.9rem;
+    }
+    ul.opts { margin: 0.5rem 0; padding-left: 1.25rem; color: var(--muted); font-size: 0.88rem; }
+    ul.opts code { color: var(--text); }
   </style>
 </head>
 <body>
-  <button type="button" class="theme-toggle" id="pageThemeToggle">Tema página: claro</button>
+  <button type="button" class="float-theme" id="pageTheme">Tema demo: claro</button>
 
-  <div class="wrap">
+  <header class="hero">
     <h1>Auralert</h1>
-    <p class="subtitle">Alternativa vanilla a SweetAlert2 — demo interactiva</p>
+    <p>Librería JavaScript universal para alertas, toasts, modales y notificaciones. Un solo <code>&lt;script&gt;</code> — funciona en cualquier stack.</p>
+  </header>
 
-    <!-- Toast -->
-    <section>
-      <h2>Toast</h2>
-      <p class="label">Tipos</p>
-      <div class="btn-row">
-        <button class="demo-btn success" data-toast-type="success">Success</button>
-        <button class="demo-btn error" data-toast-type="error">Error</button>
-        <button class="demo-btn warning" data-toast-type="warning">Warning</button>
-        <button class="demo-btn info" data-toast-type="info">Info</button>
-      </div>
-      <p class="label">Posición</p>
-      <div class="btn-row">
-        <button class="demo-btn" data-toast-pos="top-right">Top right</button>
-        <button class="demo-btn" data-toast-pos="top-left">Top left</button>
-        <button class="demo-btn" data-toast-pos="bottom-right">Bottom right</button>
-        <button class="demo-btn" data-toast-pos="bottom-left">Bottom left</button>
-      </div>
-      <pre><code>Auralert.toast({
-  message: 'Turno confirmado',
-  type: 'success',
-  duration: 3000,
-  position: 'top-right'
-})</code></pre>
-    </section>
+  <main class="container">
 
-    <!-- Modal -->
-    <section>
-      <h2>Modal</h2>
-      <div class="btn-row">
-        <button class="demo-btn" id="modalSimple">Solo OK</button>
-        <button class="demo-btn warning" id="modalConfirm">Confirmar / Cancelar</button>
-        <button class="demo-btn error" id="modalDelete">Eliminar (warning)</button>
-      </div>
-      <pre><code>const ok = await Auralert.modal({
-  title: '¿Cancelar turno?',
-  message: 'Esta acción no se puede deshacer',
-  type: 'warning',
-  confirmText: 'Sí, cancelar',
-  cancelText: 'Volver',
-  showCancel: true
-})
-if (ok) { /* confirmó */ }</code></pre>
-    </section>
+    <!-- 1. INSTALACIÓN -->
+    <section class="card" id="install">
+      <h2>1. Instalación</h2>
+      <p class="hint">Elegí una forma de cargar la librería. Solo necesitás una.</p>
 
-    <!-- Banner -->
-    <section>
-      <h2>Banner</h2>
-      <div class="btn-row">
-        <button class="demo-btn info" id="bannerTop">Top (cerrable)</button>
-        <button class="demo-btn" id="bannerBottom">Bottom (auto 5s)</button>
-      </div>
-      <pre><code>Auralert.banner({
-  message: 'Nueva versión disponible',
-  type: 'info',
-  position: 'top',
-  closeable: true
-})</code></pre>
-    </section>
-
-    <!-- Notify -->
-    <section>
-      <h2>Notify (in-app)</h2>
-      <div class="btn-row">
-        <button class="demo-btn success" id="notify1">Nuevo turno</button>
-        <button class="demo-btn" id="notifyStack">Apilar 3</button>
-      </div>
-      <pre><code>Auralert.notify({
-  title: 'Nuevo turno',
-  message: 'Juan Pérez reservó para las 15:00',
-  type: 'success',
-  duration: 5000
-})</code></pre>
-    </section>
-
-    <!-- Theme -->
-    <section>
-      <h2>Tema Auralert</h2>
-      <div class="btn-row">
-        <button class="demo-btn" id="aaLight">Light</button>
-        <button class="demo-btn" id="aaDark">Dark</button>
-        <button class="demo-btn" id="aaAuto">Auto (sistema)</button>
-      </div>
-      <pre><code>Auralert.setTheme('dark')  // 'light' | 'dark' | 'auto'</code></pre>
-    </section>
-
-    <!-- Django -->
-    <section>
-      <h2>Integración Django</h2>
-
-      <h3 style="font-size:1rem;margin-top:0">1. Script en <code>base.html</code></h3>
+      <h3>GitHub Pages (recomendado)</h3>
       <pre><code>&lt;script src="https://ovejero92.github.io/Auralert/dist/auralert.min.js"&gt;&lt;/script&gt;</code></pre>
 
-      <div class="django-block">
-        <h3 style="font-size:1rem">2. Messages framework → toast</h3>
-        <p class="label">En tu template (ej. después del body):</p>
+      <h3>jsDelivr (por versión)</h3>
+      <pre><code>&lt;script src="https://cdn.jsdelivr.net/gh/ovejero92/Auralert@1.2.0/dist/auralert.min.js"&gt;&lt;/script&gt;</code></pre>
+
+      <h3>Archivo local</h3>
+      <pre><code>&lt;script src="/ruta/a/dist/auralert.min.js"&gt;&lt;/script&gt;</code></pre>
+
+      <h3>Uso mínimo</h3>
+      <pre><code>&lt;script src="https://ovejero92.github.io/Auralert/dist/auralert.min.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+  Auralert.toast({ message: '¡Listo!', type: 'success' });
+&lt;/script&gt;</code></pre>
+    </section>
+
+    <!-- 2. INTEGRACIÓN POR FRAMEWORK -->
+    <section class="card" id="integrations">
+      <h2>2. Integración por proyecto</h2>
+      <p class="hint">Seleccioná tu entorno. Cada pestaña muestra cómo instalar y un ejemplo listo para copiar.</p>
+
+      <div class="tabs" role="tablist">
+        <button class="tab active" data-tab="html">HTML / JS</button>
+        <button class="tab" data-tab="django">Django</button>
+        <button class="tab" data-tab="react">React</button>
+        <button class="tab" data-tab="vue">Vue</button>
+        <button class="tab" data-tab="angular">Angular</button>
+        <button class="tab" data-tab="laravel">Laravel</button>
+        <button class="tab" data-tab="wordpress">WordPress</button>
+        <button class="tab" data-tab="nodejs">Node / EJS</button>
+      </div>
+
+      <div id="panel-html" class="panel active">
+        <pre><code>&lt;!-- Cualquier página estática o SPA sin bundler --&gt;
+&lt;script src="https://ovejero92.github.io/Auralert/dist/auralert.min.js"&gt;&lt;/script&gt;
+&lt;button onclick="Auralert.modal({ title: 'Hola', message: 'Desde HTML puro' })"&gt;
+  Abrir modal
+&lt;/button&gt;</code></pre>
+      </div>
+
+      <div id="panel-django" class="panel">
+        <p class="hint"><code>templates/base.html</code></p>
+        <pre><code>&lt;script src="https://ovejero92.github.io/Auralert/dist/auralert.min.js"&gt;&lt;/script&gt;
+{% block extra_js %}{% endblock %}</code></pre>
+        <p class="hint">Messages framework → toasts automáticos</p>
         <pre><code>{% if messages %}
 &lt;script&gt;
 document.addEventListener('DOMContentLoaded', function () {
   {% for message in messages %}
   Auralert.toast({
     message: "{{ message|escapejs }}",
-    type: "{% if message.tags == 'error' %}error{% elif message.tags == 'success' %}success{% elif message.tags == 'warning' %}warning{% else %}info{% endif %}"
+    type: "{% if 'error' in message.tags %}error{% elif 'success' in message.tags %}success{% elif 'warning' in message.tags %}warning{% else %}info{% endif %}"
   });
   {% endfor %}
 });
 &lt;/script&gt;
 {% endif %}</code></pre>
-        <p class="label">En la vista:</p>
-        <pre><code>from django.contrib import messages
-
-def confirmar_turno(request):
+        <p class="hint">Vista + AJAX</p>
+        <pre><code># views.py
+from django.http import JsonResponse
+def guardar(request):
     # ...
-    messages.success(request, "Turno confirmado correctamente")
-    return redirect("agenda")</code></pre>
-      </div>
+    return JsonResponse({"ok": True, "message": "Guardado correctamente"})
 
-      <div class="django-block">
-        <h3 style="font-size:1rem">3. AJAX / fetch</h3>
-        <button class="demo-btn info" id="djangoAjaxDemo">Simular respuesta AJAX</button>
-        <pre><code>fetch('/api/reservar/', { method: 'POST', body: formData })
+# En el front (fetch)
+fetch('/api/guardar/', { method: 'POST', headers: { 'X-CSRFToken': csrf } })
   .then(r => r.json())
-  .then(data => {
-    if (data.ok) {
-      Auralert.toast({ message: data.message, type: 'success' });
-    } else {
-      Auralert.notify({
-        title: 'Error',
-        message: data.error,
-        type: 'error'
-      });
-    }
-  });</code></pre>
+  .then(d => Auralert.toast({ message: d.message, type: d.ok ? 'success' : 'error' }));</code></pre>
+      </div>
+
+      <div id="panel-react" class="panel">
+        <pre><code>// public/index.html — antes de cerrar &lt;/body&gt;
+&lt;script src="https://ovejero92.github.io/Auralert/dist/auralert.min.js"&gt;&lt;/script&gt;
+
+// En cualquier componente (Auralert es global)
+function MiComponente() {
+  const guardar = async () => {
+    const ok = await Auralert.modal({
+      title: '¿Confirmar?',
+      message: 'Se enviarán los datos.',
+      type: 'warning',
+      showCancel: true
+    });
+    if (ok) Auralert.toast({ message: 'Enviado', type: 'success' });
+  };
+  return &lt;button onClick={guardar}&gt;Guardar&lt;/button&gt;;
+}</code></pre>
+      </div>
+
+      <div id="panel-vue" class="panel">
+        <pre><code>&lt;!-- index.html --&gt;
+&lt;script src="https://ovejero92.github.io/Auralert/dist/auralert.min.js"&gt;&lt;/script&gt;
+
+&lt;!-- MiVista.vue --&gt;
+&lt;script setup&gt;
+const confirmar = async () => {
+  const ok = await window.Auralert.modal({
+    title: 'Eliminar ítem',
+    message: 'No se puede deshacer.',
+    type: 'error',
+    showCancel: true,
+    confirmText: 'Eliminar',
+    cancelText: 'Cancelar'
+  });
+  if (ok) window.Auralert.notify({ title: 'Listo', message: 'Ítem eliminado', type: 'success' });
+};
+&lt;/script&gt;
+&lt;template&gt;&lt;button @click="confirmar"&gt;Eliminar&lt;/button&gt;&lt;/template&gt;</code></pre>
+      </div>
+
+      <div id="panel-angular" class="panel">
+        <pre><code>// angular.json o index.html
+&lt;script src="https://ovejero92.github.io/Auralert/dist/auralert.min.js"&gt;&lt;/script&gt;
+
+// servicio opcional: src/app/auralert.service.ts
+declare const Auralert: any;
+@Injectable({ providedIn: 'root' })
+export class AuralertService {
+  toast(opts: object) { return Auralert.toast(opts); }
+  modal(opts: object) { return Auralert.modal(opts); }
+}
+
+// componente
+constructor(private alerts: AuralertService) {}
+guardar() {
+  this.alerts.toast({ message: 'Guardado', type: 'success' });
+}</code></pre>
+      </div>
+
+      <div id="panel-laravel" class="panel">
+        <pre><code>{{-- resources/views/layouts/app.blade.php --}}
+&lt;script src="https://ovejero92.github.io/Auralert/dist/auralert.min.js"&gt;&lt;/script&gt;
+@stack('scripts')
+
+@if(session('success'))
+&lt;script&gt;
+  Auralert.toast({ message: @json(session('success')), type: 'success' });
+&lt;/script&gt;
+@endif
+
+// Controller
+return redirect()-&gt;back()-&gt;with('success', 'Registro creado');</code></pre>
+      </div>
+
+      <div id="panel-wordpress" class="panel">
+        <pre><code>// functions.php — encolar en todo el sitio
+function auralert_scripts() {
+  wp_enqueue_script(
+    'auralert',
+    'https://ovejero92.github.io/Auralert/dist/auralert.min.js',
+    array(),
+    '1.2.0',
+    true
+  );
+}
+add_action('wp_enqueue_scripts', 'auralert_scripts');
+
+// En un plugin o tema (inline después del submit)
+&lt;script&gt;
+  Auralert.toast({ message: 'Comentario publicado', type: 'success' });
+&lt;/script&gt;</code></pre>
+      </div>
+
+      <div id="panel-nodejs" class="panel">
+        <pre><code>&lt;!-- views/layout.ejs --&gt;
+&lt;script src="https://ovejero92.github.io/Auralert/dist/auralert.min.js"&gt;&lt;/script&gt;
+&lt;% if (flash) { %&gt;
+&lt;script&gt;Auralert.toast({ message: &lt;%- JSON.stringify(flash) %&gt;, type: 'info' });&lt;/script&gt;
+&lt;% } %&gt;
+
+// Express
+res.render('pagina', { flash: 'Bienvenido' });</code></pre>
       </div>
     </section>
 
-    <!-- Install -->
-    <section>
-      <h2>Instalación</h2>
-      <pre><code>&lt;script src="https://ovejero92.github.io/Auralert/dist/auralert.min.js"&gt;&lt;/script&gt;</code></pre>
+    <!-- 3. PERSONALIZACIÓN -->
+    <section class="card" id="customize">
+      <h2>3. Personalización</h2>
+      <p class="hint">A diferencia de librerías cerradas, podés controlar clases, estilos, HTML, iconos, callbacks y botones custom en cada llamada.</p>
+
+      <button type="button" class="demo-btn primary" id="btnCustomModal">Probar modal personalizado</button>
+      <button type="button" class="demo-btn" id="btnCustomToast">Probar toast personalizado</button>
+
+      <pre><code>// Modal con estilos y botones propios
+await Auralert.modal({
+  title: 'Plan Pro',
+  message: '¿Querés desbloquear temas premium?',
+  type: 'info',
+  width: '480px',
+  modalClass: 'mi-modal',
+  style: { borderRadius: '20px', padding: '32px' },
+  overlayStyle: { backdropFilter: 'blur(4px)' },
+  confirmClass: 'aa-btn-primary',
+  confirmStyle: { background: '#6366f1', borderRadius: '999px' },
+  buttons: [
+    { text: 'Más tarde', className: 'aa-btn-secondary', value: false },
+    { text: 'Ver planes', className: 'aa-btn-primary', value: true, onClick: () => console.log('click') }
+  ],
+  onOpen: (el) => console.log('abierto', el),
+  onClose: (v) => console.log('cerrado', v)
+});
+
+// Toast con HTML e icono custom
+Auralert.toast({
+  html: '&lt;strong&gt;Pedido #42&lt;/strong&gt; enviado',
+  icon: '📦',
+  duration: 4000,
+  toastClass: 'mi-toast',
+  style: { background: '#1e1e2e', color: '#fff' },
+  onShow: (el) => el.style.borderLeft = '4px solid #f59e0b'
+});
+
+// Defaults globales para todo el proyecto
+Auralert.configure({
+  toast: { position: 'bottom-right', duration: 4000 },
+  modal: { confirmText: 'OK', cancelText: 'No' },
+  theme: 'auto'
+});</code></pre>
+
+      <h3>Opciones comunes (todos los componentes)</h3>
+      <ul class="opts">
+        <li><code>type</code> — success | error | warning | info</li>
+        <li><code>className</code> / <code>customClass</code> — clases extra en el contenedor</li>
+        <li><code>style</code> — objeto de estilos inline</li>
+        <li><code>icon</code> — emoji o texto; <code>false</code> para ocultar</li>
+        <li><code>html</code> — contenido HTML (en lugar de message)</li>
+        <li><code>onShow</code> / <code>onClose</code> — callbacks de ciclo de vida</li>
+        <li><code>animationDuration</code> — duración de cierre en ms</li>
+      </ul>
+      <h3>Solo modal</h3>
+      <ul class="opts">
+        <li><code>titleHtml</code>, <code>overlayClass</code>, <code>backdrop: false</code></li>
+        <li><code>closeOnBackdrop</code>, <code>closeOnEscape</code>, <code>width</code>, <code>maxWidth</code></li>
+        <li><code>buttons: [{ text, className, value, onClick, style }]</code></li>
+      </ul>
     </section>
-  </div>
+
+    <!-- 4. DEMO EN VIVO -->
+    <section class="card" id="playground">
+      <h2>4. Probar componentes</h2>
+
+      <h3>Toast</h3>
+      <div class="btn-row">
+        <button class="demo-btn success" data-toast="success">Success</button>
+        <button class="demo-btn error" data-toast="error">Error</button>
+        <button class="demo-btn warning" data-toast="warning">Warning</button>
+        <button class="demo-btn" data-toast="info">Info</button>
+      </div>
+
+      <h3>Modal</h3>
+      <div class="btn-row">
+        <button class="demo-btn" id="modalOk">Solo OK</button>
+        <button class="demo-btn warning" id="modalConfirm">Confirmar</button>
+      </div>
+
+      <h3>Banner</h3>
+      <div class="btn-row">
+        <button class="demo-btn" id="bannerTop">Top</button>
+        <button class="demo-btn" id="bannerBottom">Bottom auto</button>
+      </div>
+
+      <h3>Notify</h3>
+      <div class="btn-row">
+        <button class="demo-btn success" id="notifyOne">Una notificación</button>
+        <button class="demo-btn" id="notifyStack">Apilar 3</button>
+      </div>
+
+      <h3>Tema Auralert</h3>
+      <div class="btn-row">
+        <button class="demo-btn" id="aaLight">Light</button>
+        <button class="demo-btn" id="aaDark">Dark</button>
+        <button class="demo-btn" id="aaAuto">Auto</button>
+      </div>
+    </section>
+
+    <!-- 5. ROADMAP PRO -->
+    <section class="card" id="pro">
+      <h2>5. ¿Versión Pro en el futuro? <span class="badge">roadmap</span></h2>
+      <p>La versión gratuita cubre todo lo esencial y es muy configurable. La idea para <strong>Auralert Pro</strong> (de pago) sería:</p>
+      <ul class="opts">
+        <li>Animaciones premium (spring, morph, partículas)</li>
+        <li>Temas visuales: mármol, oro, glass, neón, etc. vía CSS (gradientes + texturas)</li>
+        <li>Packs de skins para modal/toast sin tocar tu código base</li>
+        <li>Licencia para uso comercial en muchos dominios</li>
+      </ul>
+      <div class="pro-box">
+        <strong>¿Se puede simular mármol u oro?</strong> Sí. Con CSS moderno (<code>background-image</code>, gradientes, <code>backdrop-filter</code>, sombras en capas) se logran efectos muy convincentes sin imágenes pesadas. En Pro podrías hacer <code>Auralert.setSkin('marble')</code> y aplicar variables + clases precargadas.
+      </div>
+    </section>
+
+  </main>
 
   <script src="../dist/auralert.js"></script>
   <script>
-    // Toast types
-    document.querySelectorAll('[data-toast-type]').forEach(function (btn) {
+    // Tabs integración
+    document.querySelectorAll('.tab').forEach(function (tab) {
+      tab.addEventListener('click', function () {
+        document.querySelectorAll('.tab').forEach(function (t) { t.classList.remove('active'); });
+        document.querySelectorAll('.panel').forEach(function (p) { p.classList.remove('active'); });
+        tab.classList.add('active');
+        document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+      });
+    });
+
+    // Tema página demo
+    var pageDark = false;
+    document.getElementById('pageTheme').addEventListener('click', function () {
+      pageDark = !pageDark;
+      document.body.classList.toggle('page-dark', pageDark);
+      this.textContent = 'Tema demo: ' + (pageDark ? 'oscuro' : 'claro');
+    });
+
+    // Playground
+    document.querySelectorAll('[data-toast]').forEach(function (btn) {
       btn.addEventListener('click', function () {
-        var t = btn.getAttribute('data-toast-type');
+        var t = btn.getAttribute('data-toast');
         Auralert.toast({ message: 'Toast ' + t, type: t });
       });
     });
 
-    document.querySelectorAll('[data-toast-pos]').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        var p = btn.getAttribute('data-toast-pos');
-        Auralert.toast({ message: 'Posición: ' + p, type: 'info', position: p });
-      });
-    });
-
-    document.getElementById('modalSimple').addEventListener('click', async function () {
-      await Auralert.modal({
-        title: 'Guardado',
-        message: 'Los cambios se guardaron correctamente.',
-        type: 'success',
-        confirmText: 'Entendido',
-        showCancel: false
-      });
+    document.getElementById('modalOk').addEventListener('click', function () {
+      Auralert.modal({ title: 'Operación exitosa', message: 'Los cambios se guardaron.', type: 'success', showCancel: false });
     });
 
     document.getElementById('modalConfirm').addEventListener('click', async function () {
       var ok = await Auralert.modal({
-        title: '¿Cancelar turno?',
-        message: 'Esta acción no se puede deshacer.',
+        title: '¿Continuar?',
+        message: 'Revisá los datos antes de confirmar.',
         type: 'warning',
-        confirmText: 'Sí, cancelar',
-        cancelText: 'Volver',
-        showCancel: true
+        showCancel: true,
+        confirmText: 'Sí',
+        cancelText: 'No'
       });
-      Auralert.toast({
-        message: ok ? 'Turno cancelado' : 'Operación cancelada',
-        type: ok ? 'success' : 'info'
-      });
-    });
-
-    document.getElementById('modalDelete').addEventListener('click', async function () {
-      var ok = await Auralert.modal({
-        title: '¿Eliminar registro?',
-        message: 'No podrás recuperarlo.',
-        type: 'error',
-        confirmText: 'Eliminar',
-        cancelText: 'No',
-        showCancel: true
-      });
-      if (ok) Auralert.toast({ message: 'Eliminado', type: 'success' });
+      Auralert.toast({ message: ok ? 'Confirmado' : 'Cancelado', type: ok ? 'success' : 'info' });
     });
 
     document.getElementById('bannerTop').addEventListener('click', function () {
-      Auralert.banner({
-        message: 'Nueva versión disponible — actualizá cuando puedas',
-        type: 'info',
-        position: 'top',
-        closeable: true
-      });
+      Auralert.banner({ message: 'Mantenimiento programado — 02:00 UTC', type: 'info', position: 'top' });
     });
 
     document.getElementById('bannerBottom').addEventListener('click', function () {
-      Auralert.banner({
-        message: 'Mantenimiento programado a las 02:00',
-        type: 'warning',
-        position: 'bottom',
-        duration: 5000,
-        closeable: false
-      });
+      Auralert.banner({ message: 'Sesión por expirar en 5 min', type: 'warning', position: 'bottom', duration: 5000, closeable: false });
     });
 
-    document.getElementById('notify1').addEventListener('click', function () {
-      Auralert.notify({
-        title: 'Nuevo turno',
-        message: 'Juan Pérez reservó para las 15:00',
-        type: 'success',
-        duration: 5000
-      });
+    document.getElementById('notifyOne').addEventListener('click', function () {
+      Auralert.notify({ title: 'Nuevo mensaje', message: 'Tenés 3 notificaciones sin leer.', type: 'info' });
     });
 
     document.getElementById('notifyStack').addEventListener('click', function () {
       ['success', 'info', 'warning'].forEach(function (t, i) {
         setTimeout(function () {
-          Auralert.notify({
-            title: 'Notificación ' + (i + 1),
-            message: 'Apiladas en la esquina superior derecha',
-            type: t
-          });
-        }, i * 200);
+          Auralert.notify({ title: 'Alerta ' + (i + 1), message: 'Apiladas a la derecha', type: t });
+        }, i * 180);
       });
     });
 
-    document.getElementById('aaLight').addEventListener('click', function () {
-      Auralert.setTheme('light');
-      Auralert.toast({ message: 'Tema Auralert: light', type: 'info' });
-    });
-    document.getElementById('aaDark').addEventListener('click', function () {
-      Auralert.setTheme('dark');
-      Auralert.toast({ message: 'Tema Auralert: dark', type: 'info' });
-    });
-    document.getElementById('aaAuto').addEventListener('click', function () {
-      Auralert.setTheme('auto');
-      Auralert.toast({ message: 'Tema Auralert: auto (sistema)', type: 'info' });
+    document.getElementById('aaLight').addEventListener('click', function () { Auralert.setTheme('light'); });
+    document.getElementById('aaDark').addEventListener('click', function () { Auralert.setTheme('dark'); });
+    document.getElementById('aaAuto').addEventListener('click', function () { Auralert.setTheme('auto'); });
+
+    document.getElementById('btnCustomModal').addEventListener('click', async function () {
+      await Auralert.modal({
+        title: 'Modal personalizado',
+        message: 'Fondo, overlay y botones configurables.',
+        type: 'info',
+        width: '440px',
+        style: { borderRadius: '16px' },
+        overlayStyle: { backdropFilter: 'blur(6px)' },
+        buttons: [
+          { text: 'Cerrar', className: 'aa-btn-secondary', value: false },
+          { text: 'Genial', className: 'aa-btn-primary', value: true }
+        ]
+      });
     });
 
-    document.getElementById('djangoAjaxDemo').addEventListener('click', function () {
-      setTimeout(function () {
-        var ok = Math.random() > 0.3;
-        if (ok) {
-          Auralert.toast({ message: 'Reserva creada (simulado)', type: 'success' });
-        } else {
-          Auralert.notify({
-            title: 'Error de reserva',
-            message: 'El horario ya no está disponible.',
-            type: 'error'
-          });
-        }
-      }, 400);
-    });
-
-    var pageDark = false;
-    document.getElementById('pageThemeToggle').addEventListener('click', function () {
-      pageDark = !pageDark;
-      document.body.classList.toggle('dark-demo', pageDark);
-      this.textContent = 'Tema página: ' + (pageDark ? 'oscuro' : 'claro');
+    document.getElementById('btnCustomToast').addEventListener('click', function () {
+      Auralert.toast({
+        html: '<strong>Custom</strong> — icono y estilos propios',
+        icon: '✨',
+        duration: 4000,
+        style: { background: 'linear-gradient(135deg,#6366f1,#8b5cf6)', color: '#fff', border: 'none' }
+      });
     });
   </script>
 </body>

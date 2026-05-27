@@ -58,6 +58,13 @@
     return rootEl;
   }
 
+  function themedShell(className) {
+    var el = document.createElement('div');
+    el.className = className + ' auralert-root';
+    el.setAttribute('data-auralert-theme', resolvedTheme);
+    return el;
+  }
+
   function init() {
     loadFont();
     injectStyles();
@@ -106,6 +113,42 @@
     return el;
   }
 
+  function applyClasses(el, options, keys) {
+    if (!options) return;
+    keys.forEach(function (k) {
+      if (options[k]) {
+        String(options[k]).split(/\s+/).forEach(function (c) {
+          if (c) el.classList.add(c);
+        });
+      }
+    });
+  }
+
+  function applyStyles(el, style) {
+    if (!style || typeof style !== 'object') return;
+    Object.keys(style).forEach(function (k) {
+      el.style[k] = style[k];
+    });
+  }
+
+  function setNodeContent(node, text, html) {
+    if (html) {
+      node.innerHTML = html;
+    } else if (text !== undefined && text !== null) {
+      node.textContent = text;
+    }
+  }
+
+  function resolveIcon(options, fallbackType) {
+    if (options.icon === false || options.showIcon === false) return null;
+    if (options.icon !== undefined && options.icon !== null) return options.icon;
+    return ICONS[normalizeType(options.type || fallbackType)];
+  }
+
+  function callFn(fn, arg) {
+    if (typeof fn === 'function') fn(arg);
+  }
+
   function removeAfterAnimation(el, animClass, ms) {
     return new Promise(function (resolve) {
       el.classList.add(animClass);
@@ -118,37 +161,44 @@
 
   function toast(options) {
     options = options || {};
-    var message = options.message || '';
     var type = normalizeType(options.type);
     var duration = options.duration !== undefined ? options.duration : 3000;
     var position = options.position || 'top-right';
-
-    var container = getContainer('aa-toast-container', { position: position });
-    var isRight = position.indexOf('right') >= 0;
     var enterClass = 'aa-enter-' + position;
     var exitClass = 'aa-exit-' + position;
+
+    var container = getContainer('aa-toast-container', { position: position });
 
     var el = document.createElement('div');
     el.className = 'aa-toast ' + enterClass;
     el.setAttribute('data-type', type);
+    applyClasses(el, options, ['className', 'toastClass', 'customClass']);
+    applyStyles(el, options.style);
 
-    var icon = document.createElement('span');
-    icon.className = 'aa-toast-icon';
-    icon.textContent = ICONS[type];
-    icon.setAttribute('aria-hidden', 'true');
+    var iconChar = resolveIcon(options, type);
+    if (iconChar !== null) {
+      var icon = document.createElement('span');
+      icon.className = 'aa-toast-icon';
+      icon.textContent = iconChar;
+      icon.setAttribute('aria-hidden', 'true');
+      applyClasses(icon, options, ['iconClass']);
+      el.appendChild(icon);
+    }
 
     var msg = document.createElement('span');
     msg.className = 'aa-toast-msg';
-    msg.textContent = message;
-
-    el.appendChild(icon);
+    setNodeContent(msg, options.message, options.html);
+    applyClasses(msg, options, ['messageClass']);
     el.appendChild(msg);
+
     container.appendChild(el);
+    callFn(options.onShow, el);
 
     var timer;
     function dismiss() {
       if (timer) clearTimeout(timer);
-      removeAfterAnimation(el, exitClass, 300);
+      callFn(options.onClose, el);
+      removeAfterAnimation(el, exitClass, options.animationDuration || 300);
     }
 
     if (duration > 0) {
@@ -160,12 +210,14 @@
 
   function modal(options) {
     options = options || {};
-    var title = options.title || '';
-    var message = options.message || '';
     var type = normalizeType(options.type);
     var confirmText = options.confirmText || 'Aceptar';
     var cancelText = options.cancelText || 'Cancelar';
     var showCancel = options.showCancel;
+    var closeOnBackdrop = options.closeOnBackdrop !== false;
+    var closeOnEscape = options.closeOnEscape !== false;
+    var showIcon = resolveIcon(options, type);
+
     if (showCancel === undefined) {
       showCancel = !!(options.onCancel || options.cancelText);
     }
@@ -175,123 +227,177 @@
 
     return new Promise(function (resolve) {
       var settled = false;
+
       function finish(value) {
         if (settled) return;
         settled = true;
-        close(value);
+        callFn(options.onClose, value);
+        overlay.classList.add('aa-closing');
+        setTimeout(function () {
+          if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
+          resolve(value);
+        }, options.animationDuration || 200);
       }
 
-      var overlay = document.createElement('div');
-      overlay.className = 'aa-modal-overlay';
+      var overlay = themedShell('aa-modal-overlay');
       overlay.setAttribute('role', 'dialog');
       overlay.setAttribute('aria-modal', 'true');
+      applyClasses(overlay, options, ['overlayClass', 'customClass']);
+      applyStyles(overlay, options.overlayStyle);
+
+      if (options.backdrop === false) {
+        overlay.style.background = 'transparent';
+      }
 
       var box = document.createElement('div');
       box.className = 'aa-modal';
       box.setAttribute('data-type', type);
+      applyClasses(box, options, ['className', 'modalClass', 'customClass']);
+      applyStyles(box, options.style);
+      if (options.width) box.style.maxWidth = options.width;
+      if (options.maxWidth) box.style.maxWidth = options.maxWidth;
 
-      var iconEl = document.createElement('div');
-      iconEl.className = 'aa-modal-icon';
-      iconEl.textContent = ICONS[type];
-      iconEl.setAttribute('aria-hidden', 'true');
+      if (showIcon !== null) {
+        var iconEl = document.createElement('div');
+        iconEl.className = 'aa-modal-icon';
+        iconEl.textContent = showIcon;
+        iconEl.setAttribute('aria-hidden', 'true');
+        applyClasses(iconEl, options, ['iconClass']);
+        box.appendChild(iconEl);
+      }
 
-      var titleEl = document.createElement('h2');
-      titleEl.className = 'aa-modal-title';
-      titleEl.textContent = title;
+      if (options.title || options.titleHtml) {
+        var titleEl = document.createElement('h2');
+        titleEl.className = 'aa-modal-title';
+        setNodeContent(titleEl, options.title, options.titleHtml);
+        applyClasses(titleEl, options, ['titleClass']);
+        box.appendChild(titleEl);
+      }
 
-      var msgEl = document.createElement('p');
-      msgEl.className = 'aa-modal-message';
-      msgEl.textContent = message;
+      if (options.message || options.html) {
+        var msgEl = document.createElement('p');
+        msgEl.className = 'aa-modal-message';
+        setNodeContent(msgEl, options.message, options.html);
+        applyClasses(msgEl, options, ['messageClass']);
+        box.appendChild(msgEl);
+      }
 
       var actions = document.createElement('div');
       actions.className = 'aa-modal-actions';
+      applyClasses(actions, options, ['actionsClass']);
 
-      var btnConfirm = document.createElement('button');
-      btnConfirm.type = 'button';
-      btnConfirm.className = 'aa-btn aa-btn-primary';
-      btnConfirm.textContent = confirmText;
-
-      var btnCancel = document.createElement('button');
-      btnCancel.type = 'button';
-      btnCancel.className = 'aa-btn aa-btn-secondary';
-      btnCancel.textContent = cancelText;
-
-      function close(result) {
-        overlay.classList.add('aa-closing');
-        setTimeout(function () {
-          if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
-          resolve(result);
-        }, 200);
+      function wireButton(btn, defaultClass, defaultValue) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'aa-btn ' + (btn.className || defaultClass);
+        b.textContent = btn.text || btn.label || 'OK';
+        applyStyles(b, btn.style);
+        b.addEventListener('click', function () {
+          callFn(btn.onClick, b);
+          if (btn.handler) btn.handler();
+          finish(btn.value !== undefined ? btn.value : defaultValue);
+        });
+        return b;
       }
 
-      btnConfirm.addEventListener('click', function () {
-        if (options.onConfirm) options.onConfirm();
-        finish(true);
-      });
+      if (options.buttons && options.buttons.length) {
+        options.buttons.forEach(function (btn) {
+          actions.appendChild(wireButton(btn, 'aa-btn-primary', true));
+        });
+      } else {
+        var btnConfirm = document.createElement('button');
+        btnConfirm.type = 'button';
+        btnConfirm.className = 'aa-btn aa-btn-primary';
+        btnConfirm.textContent = confirmText;
+        applyClasses(btnConfirm, options, ['confirmClass']);
+        applyStyles(btnConfirm, options.confirmStyle);
+        btnConfirm.addEventListener('click', function () {
+          callFn(options.onConfirm);
+          finish(true);
+        });
 
-      btnCancel.addEventListener('click', function () {
-        if (options.onCancel) options.onCancel();
-        finish(false);
-      });
-
-      overlay.addEventListener('click', function (e) {
-        if (e.target === overlay) finish(false);
-      });
-
-      document.addEventListener('keydown', function onKey(e) {
-        if (e.key === 'Escape') {
-          document.removeEventListener('keydown', onKey);
-          if (options.onCancel) options.onCancel();
+        var btnCancel = document.createElement('button');
+        btnCancel.type = 'button';
+        btnCancel.className = 'aa-btn aa-btn-secondary';
+        btnCancel.textContent = cancelText;
+        applyClasses(btnCancel, options, ['cancelClass']);
+        applyStyles(btnCancel, options.cancelStyle);
+        btnCancel.addEventListener('click', function () {
+          callFn(options.onCancel);
           finish(false);
-        }
-      });
+        });
 
-      actions.appendChild(btnConfirm);
-      if (showCancel) actions.appendChild(btnCancel);
+        actions.appendChild(btnConfirm);
+        if (showCancel) actions.appendChild(btnCancel);
+      }
 
-      box.appendChild(iconEl);
-      if (title) box.appendChild(titleEl);
-      if (message) box.appendChild(msgEl);
       box.appendChild(actions);
       overlay.appendChild(box);
-      document.body.appendChild(overlay);
+      ensureRoot().appendChild(overlay);
 
-      btnConfirm.focus();
+      if (closeOnBackdrop) {
+        overlay.addEventListener('click', function (e) {
+          if (e.target === overlay) {
+            callFn(options.onCancel);
+            finish(false);
+          }
+        });
+      }
+
+      if (closeOnEscape) {
+        document.addEventListener('keydown', function onKey(e) {
+          if (e.key === 'Escape') {
+            document.removeEventListener('keydown', onKey);
+            callFn(options.onCancel);
+            finish(false);
+          }
+        });
+      }
+
+      var firstBtn = overlay.querySelector('button');
+      if (firstBtn) firstBtn.focus();
+
+      callFn(options.onOpen, overlay);
     });
   }
 
   function banner(options) {
     options = options || {};
-    var message = options.message || '';
     var type = normalizeType(options.type);
     var position = options.position || 'top';
     var duration = options.duration !== undefined ? options.duration : 0;
     var closeable = options.closeable !== false;
-
-    var container = getContainer('aa-banner-container', { position: position });
     var enterClass = 'aa-enter-' + position;
     var exitClass = 'aa-exit-' + position;
+
+    var container = getContainer('aa-banner-container', { position: position });
 
     var el = document.createElement('div');
     el.className = 'aa-banner ' + enterClass;
     el.setAttribute('data-type', type);
     el.setAttribute('role', 'alert');
+    applyClasses(el, options, ['className', 'bannerClass', 'customClass']);
+    applyStyles(el, options.style);
 
-    var icon = document.createElement('span');
-    icon.className = 'aa-banner-icon';
-    icon.textContent = ICONS[type];
-    icon.setAttribute('aria-hidden', 'true');
+    var iconChar = resolveIcon(options, type);
+    if (iconChar !== null) {
+      var icon = document.createElement('span');
+      icon.className = 'aa-banner-icon';
+      icon.textContent = iconChar;
+      icon.setAttribute('aria-hidden', 'true');
+      el.appendChild(icon);
+    }
 
     var text = document.createElement('span');
-    text.textContent = message;
-
-    el.appendChild(icon);
+    setNodeContent(text, options.message, options.html);
+    applyClasses(text, options, ['messageClass']);
     el.appendChild(text);
 
     var timer;
     function dismiss() {
       if (timer) clearTimeout(timer);
-      removeAfterAnimation(el, exitClass, 300);
+      callFn(options.onClose, el);
+      removeAfterAnimation(el, exitClass, options.animationDuration || 300);
     }
 
     if (closeable) {
@@ -299,12 +405,13 @@
       closeBtn.type = 'button';
       closeBtn.className = 'aa-banner-close';
       closeBtn.setAttribute('aria-label', 'Cerrar');
-      closeBtn.textContent = '×';
+      closeBtn.textContent = options.closeText || '×';
       closeBtn.addEventListener('click', dismiss);
       el.appendChild(closeBtn);
     }
 
     container.appendChild(el);
+    callFn(options.onShow, el);
 
     if (duration > 0) {
       timer = setTimeout(dismiss, duration);
@@ -315,8 +422,6 @@
 
   function notify(options) {
     options = options || {};
-    var title = options.title || '';
-    var message = options.message || '';
     var type = normalizeType(options.type);
     var duration = options.duration !== undefined ? options.duration : 5000;
 
@@ -325,44 +430,57 @@
     var el = document.createElement('div');
     el.className = 'aa-notify aa-enter';
     el.setAttribute('data-type', type);
+    applyClasses(el, options, ['className', 'notifyClass', 'customClass']);
+    applyStyles(el, options.style);
 
-    var icon = document.createElement('div');
-    icon.className = 'aa-notify-icon';
-    icon.textContent = ICONS[type];
-    icon.setAttribute('aria-hidden', 'true');
+    var iconChar = resolveIcon(options, type);
+    if (iconChar !== null) {
+      var icon = document.createElement('div');
+      icon.className = 'aa-notify-icon';
+      icon.textContent = iconChar;
+      icon.setAttribute('aria-hidden', 'true');
+      applyClasses(icon, options, ['iconClass']);
+      el.appendChild(icon);
+    }
 
     var body = document.createElement('div');
     body.className = 'aa-notify-body';
+    applyClasses(body, options, ['bodyClass']);
 
-    if (title) {
+    if (options.title || options.titleHtml) {
       var titleEl = document.createElement('p');
       titleEl.className = 'aa-notify-title';
-      titleEl.textContent = title;
+      setNodeContent(titleEl, options.title, options.titleHtml);
+      applyClasses(titleEl, options, ['titleClass']);
       body.appendChild(titleEl);
     }
 
-    if (message) {
+    if (options.message || options.html) {
       var msgEl = document.createElement('p');
       msgEl.className = 'aa-notify-message';
-      msgEl.textContent = message;
+      setNodeContent(msgEl, options.message, options.html);
+      applyClasses(msgEl, options, ['messageClass']);
       body.appendChild(msgEl);
     }
+
+    el.appendChild(body);
 
     var closeBtn = document.createElement('button');
     closeBtn.type = 'button';
     closeBtn.className = 'aa-notify-close';
     closeBtn.setAttribute('aria-label', 'Cerrar');
-    closeBtn.textContent = '×';
+    closeBtn.textContent = options.closeText || '×';
+    closeBtn.addEventListener('click', dismiss);
 
-    el.appendChild(icon);
-    el.appendChild(body);
     el.appendChild(closeBtn);
     container.appendChild(el);
+    callFn(options.onShow, el);
 
     var timer;
     function dismiss() {
       if (timer) clearTimeout(timer);
-      removeAfterAnimation(el, 'aa-exit', 300);
+      callFn(options.onClose, el);
+      removeAfterAnimation(el, 'aa-exit', options.animationDuration || 300);
     }
 
     closeBtn.addEventListener('click', dismiss);
@@ -386,6 +504,29 @@
     return { mode: themeMode, resolved: resolvedTheme };
   }
 
+  function configure(defaults) {
+    if (!defaults || typeof defaults !== 'object') return;
+    var wrap = function (fn) {
+      return function (opts) {
+        var merged = {};
+        var k;
+        for (k in defaults) {
+          if (Object.prototype.hasOwnProperty.call(defaults, k)) merged[k] = defaults[k];
+        }
+        opts = opts || {};
+        for (k in opts) {
+          if (Object.prototype.hasOwnProperty.call(opts, k)) merged[k] = opts[k];
+        }
+        return fn(merged);
+      };
+    };
+    if (defaults.toast) Auralert.toast = wrap(toast);
+    if (defaults.modal) Auralert.modal = wrap(modal);
+    if (defaults.banner) Auralert.banner = wrap(banner);
+    if (defaults.notify) Auralert.notify = wrap(notify);
+    if (defaults.theme) setTheme(defaults.theme);
+  }
+
   var Auralert = {
     toast: toast,
     modal: modal,
@@ -393,7 +534,8 @@
     notify: notify,
     setTheme: setTheme,
     getTheme: getTheme,
-    version: '1.0.1'
+    configure: configure,
+    version: '1.2.0'
   };
 
   if (typeof module !== 'undefined' && module.exports) {

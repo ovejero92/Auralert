@@ -1,125 +1,75 @@
 # Auralert
 
-Librería JavaScript vanilla (sin frameworks) como alternativa ligera a SweetAlert2. Un solo archivo JS con estilos incluidos — funciona en Django, React, HTML estático o cualquier stack.
+Librería JavaScript **universal** para alertas — toasts, modales, banners y notificaciones in-app. Un solo `<script>`, sin dependencias: Django, React, Vue, Laravel, WordPress, HTML estático, etc.
 
 ## Instalación
 
 ```html
-<!-- Recomendado: GitHub Pages -->
 <script src="https://ovejero92.github.io/Auralert/dist/auralert.min.js"></script>
-
-<!-- Alternativa CDN (usar tag, no @main: jsDelivr cachea main) -->
-<!-- <script src="https://cdn.jsdelivr.net/gh/ovejero92/Auralert@1.0.1/dist/auralert.min.js"></script> -->
 ```
+
+```javascript
+Auralert.toast({ message: '¡Listo!', type: 'success' });
+```
+
+**Demo completa:** abrí [`demo/index.html`](demo/index.html) o visitá [ovejero92.github.io/Auralert/demo/](https://ovejero92.github.io/Auralert/demo/)
 
 ## Uso rápido
 
 ```javascript
 // Toast
-Auralert.toast({ message: 'Turno confirmado', type: 'success' });
+Auralert.toast({ message: 'Guardado', type: 'success', position: 'bottom-right' });
 
-// Modal (Promise)
+// Modal → Promise<boolean>
 const ok = await Auralert.modal({
-  title: '¿Cancelar turno?',
-  message: 'Esta acción no se puede deshacer',
+  title: '¿Eliminar?',
+  message: 'No se puede deshacer.',
   type: 'warning',
-  confirmText: 'Sí, cancelar',
-  cancelText: 'Volver',
   showCancel: true
 });
 
-// Banner
-Auralert.banner({
-  message: 'Nueva versión disponible',
-  type: 'info',
-  position: 'top',
-  closeable: true
+// Personalización total
+Auralert.toast({
+  html: '<b>Pedido</b> enviado',
+  icon: '📦',
+  style: { background: '#1e1e2e', color: '#fff' },
+  onShow: (el) => { /* tu lógica */ }
 });
 
-// Notificación in-app
-Auralert.notify({
-  title: 'Nuevo turno',
-  message: 'Juan Pérez reservó para las 15:00',
-  type: 'success',
-  duration: 5000
+// Defaults globales del proyecto
+Auralert.configure({
+  toast: { position: 'top-right', duration: 4000 },
+  modal: { confirmText: 'Aceptar', cancelText: 'Cancelar' },
+  theme: 'auto'
 });
-
-// Tema
-Auralert.setTheme('dark'); // 'light' | 'dark' | 'auto'
 ```
 
 ## API
 
-### `Auralert.toast(options)`
+| Método | Descripción |
+|--------|-------------|
+| `Auralert.toast(options)` | Toast esquina |
+| `Auralert.modal(options)` | Modal centrado → `Promise` |
+| `Auralert.banner(options)` | Barra top/bottom |
+| `Auralert.notify(options)` | Card apilable |
+| `Auralert.setTheme('light'\|'dark'\|'auto')` | Tema |
+| `Auralert.configure({ toast, modal, banner, notify, theme })` | Defaults globales |
 
-| Opción     | Tipo     | Default      | Descripción                                      |
-|-----------|----------|--------------|--------------------------------------------------|
-| `message` | string   | `''`         | Texto del toast                                  |
-| `type`    | string   | `'info'`     | `success`, `error`, `warning`, `info`            |
-| `duration`| number   | `3000`       | ms hasta auto-cerrar (`0` = no auto-cierra)      |
-| `position`| string   | `'top-right'`| `top-right`, `top-left`, `bottom-right`, `bottom-left` |
+### Opciones de personalización (todas las funciones)
 
-Retorna `{ dismiss(), element }`.
+| Opción | Descripción |
+|--------|-------------|
+| `type` | `success`, `error`, `warning`, `info` |
+| `message` / `html` | Texto o HTML |
+| `icon` | Carácter custom; `false` = sin icono |
+| `className`, `customClass`, `*Class` | Clases CSS extra por parte |
+| `style`, `overlayStyle`, `confirmStyle`… | Estilos inline |
+| `onShow`, `onClose`, `onOpen`, `onConfirm`, `onCancel` | Callbacks |
+| `animationDuration` | ms al cerrar |
 
-### `Auralert.modal(options)`
+**Modal adicional:** `buttons[]`, `width`, `maxWidth`, `backdrop`, `closeOnBackdrop`, `closeOnEscape`, `titleHtml`
 
-| Opción        | Tipo     | Default    | Descripción                    |
-|--------------|----------|------------|--------------------------------|
-| `title`      | string   | `''`       | Título                         |
-| `message`    | string   | `''`       | Cuerpo                         |
-| `type`       | string   | `'info'`   | Tipo visual                    |
-| `confirmText`| string   | `'Aceptar'`| Botón principal                |
-| `cancelText` | string   | `'Cancelar'` | Botón secundario             |
-| `showCancel` | boolean  | auto       | `true` si hay `cancelText`/`onCancel` |
-| `onConfirm`  | function | —          | Callback al confirmar          |
-| `onCancel`   | function | —          | Callback al cancelar           |
-
-Retorna `Promise<boolean>` — `true` si confirmó, `false` si canceló o cerró con Escape/overlay.
-
-### `Auralert.banner(options)`
-
-| Opción      | Tipo    | Default | Descripción              |
-|------------|---------|---------|--------------------------|
-| `message`  | string  | `''`    | Texto                    |
-| `type`     | string  | `'info'`| Tipo visual              |
-| `position` | string  | `'top'` | `top` o `bottom`         |
-| `duration` | number  | `0`     | Auto-cierre en ms        |
-| `closeable`| boolean | `true`  | Botón cerrar             |
-
-### `Auralert.notify(options)`
-
-| Opción     | Tipo   | Default | Descripción        |
-|-----------|--------|---------|--------------------|
-| `title`   | string | `''`    | Título             |
-| `message` | string | `''`    | Descripción        |
-| `type`    | string | `'info'`| Tipo visual        |
-| `duration`| number | `5000`  | Auto-cierre en ms  |
-
-### `Auralert.setTheme(theme)`
-
-`'light'`, `'dark'` o `'auto'` (respeta `prefers-color-scheme`).
-
-## Django
-
-```html
-<!-- base.html -->
-<script src="https://ovejero92.github.io/Auralert/dist/auralert.min.js"></script>
-```
-
-```django
-{% if messages %}
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-  {% for message in messages %}
-  Auralert.toast({
-    message: "{{ message|escapejs }}",
-    type: "{% if 'error' in message.tags %}error{% elif 'success' in message.tags %}success{% elif 'warning' in message.tags %}warning{% else %}info{% endif %}"
-  });
-  {% endfor %}
-});
-</script>
-{% endif %}
-```
+Ver ejemplos por framework en la [demo](demo/index.html).
 
 ## Desarrollo
 
@@ -127,10 +77,6 @@ document.addEventListener('DOMContentLoaded', function () {
 node build.js
 ```
 
-Genera `dist/auralert.js` y `dist/auralert.min.js`.
-
-Abrí `demo/index.html` en el navegador para probar todos los componentes.
-
 ## Licencia
 
-MIT
+MIT — versión gratuita con API abierta. Roadmap Pro: skins premium (mármol, oro, animaciones avanzadas).
