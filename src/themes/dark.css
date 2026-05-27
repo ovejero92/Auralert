@@ -1,0 +1,24 @@
+/* Auralert — dark theme */
+.auralert-root[data-auralert-theme="dark"] {
+  --aa-bg: #1e1e2e;
+  --aa-bg-muted: #27273a;
+  --aa-bg-elevated: #2a2a3d;
+  --aa-text: #f1f5f9;
+  --aa-text-muted: #94a3b8;
+  --aa-border: rgba(255, 255, 255, 0.08);
+  --aa-overlay: rgba(0, 0, 0, 0.65);
+  --aa-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 10px 24px -4px rgba(0, 0, 0, 0.4);
+  --aa-shadow-lg: 0 8px 16px -4px rgba(0, 0, 0, 0.35), 0 24px 48px -12px rgba(0, 0, 0, 0.5);
+  --aa-success: #34d399;
+  --aa-error: #f87171;
+  --aa-warning: #fbbf24;
+  --aa-info: #818cf8;
+  --aa-success-bg: rgba(52, 211, 153, 0.18);
+  --aa-error-bg: rgba(248, 113, 113, 0.18);
+  --aa-warning-bg: rgba(251, 191, 36, 0.18);
+  --aa-info-bg: rgba(129, 140, 248, 0.18);
+  --aa-btn-primary-bg: #818cf8;
+  --aa-btn-primary-text: #0f172a;
+  --aa-btn-secondary-bg: #3f3f5a;
+  --aa-btn-secondary-text: #e2e8f0;
+}

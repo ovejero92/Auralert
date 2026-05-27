@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auralert — Demo</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: system-ui, sans-serif;
+      margin: 0;
+      padding: 24px;
+      background: #f1f5f9;
+      color: #0f172a;
+      line-height: 1.5;
+    }
+    body.dark-demo { background: #0f172a; color: #e2e8f0; }
+    .wrap { max-width: 900px; margin: 0 auto; }
+    h1 { font-size: 2rem; margin-bottom: 0.25rem; }
+    .subtitle { color: #64748b; margin-bottom: 2rem; }
+    body.dark-demo .subtitle { color: #94a3b8; }
+    section {
+      background: #fff;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,.08);
+    }
+    body.dark-demo section { background: #1e293b; }
+    h2 { font-size: 1.15rem; margin-top: 0; border-bottom: 1px solid #e2e8f0; padding-bottom: 0.5rem; }
+    body.dark-demo h2 { border-color: #334155; }
+    .btn-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 1rem; }
+    button.demo-btn {
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      background: #fff;
+      cursor: pointer;
+      font-size: 13px;
+    }
+    body.dark-demo button.demo-btn { background: #334155; border-color: #475569; color: #f1f5f9; }
+    button.demo-btn:hover { background: #f8fafc; }
+    button.demo-btn.success { border-color: #10b981; color: #059669; }
+    button.demo-btn.error { border-color: #ef4444; color: #dc2626; }
+    button.demo-btn.warning { border-color: #f59e0b; color: #d97706; }
+    button.demo-btn.info { border-color: #6366f1; color: #4f46e5; }
+    button.theme-toggle {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      z-index: 1;
+      padding: 10px 16px;
+      border-radius: 8px;
+      border: none;
+      background: #0f172a;
+      color: #fff;
+      cursor: pointer;
+      font-weight: 500;
+    }
+    pre {
+      background: #0f172a;
+      color: #e2e8f0;
+      padding: 1rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-size: 12px;
+      margin: 0;
+    }
+    code { font-family: ui-monospace, monospace; }
+    .label { font-size: 12px; color: #64748b; margin-bottom: 6px; }
+    body.dark-demo .label { color: #94a3b8; }
+    .django-block { margin-top: 1rem; }
+  </style>
+</head>
+<body>
+  <button type="button" class="theme-toggle" id="pageThemeToggle">Tema página: claro</button>
+
+  <div class="wrap">
+    <h1>Auralert</h1>
+    <p class="subtitle">Alternativa vanilla a SweetAlert2 — demo interactiva</p>
+
+    <!-- Toast -->
+    <section>
+      <h2>Toast</h2>
+      <p class="label">Tipos</p>
+      <div class="btn-row">
+        <button class="demo-btn success" data-toast-type="success">Success</button>
+        <button class="demo-btn error" data-toast-type="error">Error</button>
+        <button class="demo-btn warning" data-toast-type="warning">Warning</button>
+        <button class="demo-btn info" data-toast-type="info">Info</button>
+      </div>
+      <p class="label">Posición</p>
+      <div class="btn-row">
+        <button class="demo-btn" data-toast-pos="top-right">Top right</button>
+        <button class="demo-btn" data-toast-pos="top-left">Top left</button>
+        <button class="demo-btn" data-toast-pos="bottom-right">Bottom right</button>
+        <button class="demo-btn" data-toast-pos="bottom-left">Bottom left</button>
+      </div>
+      <pre><code>Auralert.toast({
+  message: 'Turno confirmado',
+  type: 'success',
+  duration: 3000,
+  position: 'top-right'
+})</code></pre>
+    </section>
+
+    <!-- Modal -->
+    <section>
+      <h2>Modal</h2>
+      <div class="btn-row">
+        <button class="demo-btn" id="modalSimple">Solo OK</button>
+        <button class="demo-btn warning" id="modalConfirm">Confirmar / Cancelar</button>
+        <button class="demo-btn error" id="modalDelete">Eliminar (warning)</button>
+      </div>
+      <pre><code>const ok = await Auralert.modal({
+  title: '¿Cancelar turno?',
+  message: 'Esta acción no se puede deshacer',
+  type: 'warning',
+  confirmText: 'Sí, cancelar',
+  cancelText: 'Volver',
+  showCancel: true
+})
+if (ok) { /* confirmó */ }</code></pre>
+    </section>
+
+    <!-- Banner -->
+    <section>
+      <h2>Banner</h2>
+      <div class="btn-row">
+        <button class="demo-btn info" id="bannerTop">Top (cerrable)</button>
+        <button class="demo-btn" id="bannerBottom">Bottom (auto 5s)</button>
+      </div>
+      <pre><code>Auralert.banner({
+  message: 'Nueva versión disponible',
+  type: 'info',
+  position: 'top',
+  closeable: true
+})</code></pre>
+    </section>
+
+    <!-- Notify -->
+    <section>
+      <h2>Notify (in-app)</h2>
+      <div class="btn-row">
+        <button class="demo-btn success" id="notify1">Nuevo turno</button>
+        <button class="demo-btn" id="notifyStack">Apilar 3</button>
+      </div>
+      <pre><code>Auralert.notify({
+  title: 'Nuevo turno',
+  message: 'Juan Pérez reservó para las 15:00',
+  type: 'success',
+  duration: 5000
+})</code></pre>
+    </section>
+
+    <!-- Theme -->
+    <section>
+      <h2>Tema Auralert</h2>
+      <div class="btn-row">
+        <button class="demo-btn" id="aaLight">Light</button>
+        <button class="demo-btn" id="aaDark">Dark</button>
+        <button class="demo-btn" id="aaAuto">Auto (sistema)</button>
+      </div>
+      <pre><code>Auralert.setTheme('dark')  // 'light' | 'dark' | 'auto'</code></pre>
+    </section>
+
+    <!-- Django -->
+    <section>
+      <h2>Integración Django</h2>
+
+      <h3 style="font-size:1rem;margin-top:0">1. Script en <code>base.html</code></h3>
+      <pre><code>&lt;script src="https://TU_USUARIO.github.io/auralert/dist/auralert.min.js"&gt;&lt;/script&gt;</code></pre>
+
+      <div class="django-block">
+        <h3 style="font-size:1rem">2. Messages framework → toast</h3>
+        <p class="label">En tu template (ej. después del body):</p>
+        <pre><code>{% if messages %}
+&lt;script&gt;
+document.addEventListener('DOMContentLoaded', function () {
+  {% for message in messages %}
+  Auralert.toast({
+    message: "{{ message|escapejs }}",
+    type: "{% if message.tags == 'error' %}error{% elif message.tags == 'success' %}success{% elif message.tags == 'warning' %}warning{% else %}info{% endif %}"
+  });
+  {% endfor %}
+});
+&lt;/script&gt;
+{% endif %}</code></pre>
+        <p class="label">En la vista:</p>
+        <pre><code>from django.contrib import messages
+
+def confirmar_turno(request):
+    # ...
+    messages.success(request, "Turno confirmado correctamente")
+    return redirect("agenda")</code></pre>
+      </div>
+
+      <div class="django-block">
+        <h3 style="font-size:1rem">3. AJAX / fetch</h3>
+        <button class="demo-btn info" id="djangoAjaxDemo">Simular respuesta AJAX</button>
+        <pre><code>fetch('/api/reservar/', { method: 'POST', body: formData })
+  .then(r => r.json())
+  .then(data => {
+    if (data.ok) {
+      Auralert.toast({ message: data.message, type: 'success' });
+    } else {
+      Auralert.notify({
+        title: 'Error',
+        message: data.error,
+        type: 'error'
+      });
+    }
+  });</code></pre>
+      </div>
+    </section>
+
+    <!-- Install -->
+    <section>
+      <h2>Instalación</h2>
+      <pre><code>&lt;script src="https://TU_USUARIO.github.io/auralert/dist/auralert.min.js"&gt;&lt;/script&gt;</code></pre>
+    </section>
+  </div>
+
+  <script src="../dist/auralert.js"></script>
+  <script>
+    // Toast types
+    document.querySelectorAll('[data-toast-type]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var t = btn.getAttribute('data-toast-type');
+        Auralert.toast({ message: 'Toast ' + t, type: t });
+      });
+    });
+
+    document.querySelectorAll('[data-toast-pos]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var p = btn.getAttribute('data-toast-pos');
+        Auralert.toast({ message: 'Posición: ' + p, type: 'info', position: p });
+      });
+    });
+
+    document.getElementById('modalSimple').addEventListener('click', async function () {
+      await Auralert.modal({
+        title: 'Guardado',
+        message: 'Los cambios se guardaron correctamente.',
+        type: 'success',
+        confirmText: 'Entendido',
+        showCancel: false
+      });
+    });
+
+    document.getElementById('modalConfirm').addEventListener('click', async function () {
+      var ok = await Auralert.modal({
+        title: '¿Cancelar turno?',
+        message: 'Esta acción no se puede deshacer.',
+        type: 'warning',
+        confirmText: 'Sí, cancelar',
+        cancelText: 'Volver',
+        showCancel: true
+      });
+      Auralert.toast({
+        message: ok ? 'Turno cancelado' : 'Operación cancelada',
+        type: ok ? 'success' : 'info'
+      });
+    });
+
+    document.getElementById('modalDelete').addEventListener('click', async function () {
+      var ok = await Auralert.modal({
+        title: '¿Eliminar registro?',
+        message: 'No podrás recuperarlo.',
+        type: 'error',
+        confirmText: 'Eliminar',
+        cancelText: 'No',
+        showCancel: true
+      });
+      if (ok) Auralert.toast({ message: 'Eliminado', type: 'success' });
+    });
+
+    document.getElementById('bannerTop').addEventListener('click', function () {
+      Auralert.banner({
+        message: 'Nueva versión disponible — actualizá cuando puedas',
+        type: 'info',
+        position: 'top',
+        closeable: true
+      });
+    });
+
+    document.getElementById('bannerBottom').addEventListener('click', function () {
+      Auralert.banner({
+        message: 'Mantenimiento programado a las 02:00',
+        type: 'warning',
+        position: 'bottom',
+        duration: 5000,
+        closeable: false
+      });
+    });
+
+    document.getElementById('notify1').addEventListener('click', function () {
+      Auralert.notify({
+        title: 'Nuevo turno',
+        message: 'Juan Pérez reservó para las 15:00',
+        type: 'success',
+        duration: 5000
+      });
+    });
+
+    document.getElementById('notifyStack').addEventListener('click', function () {
+      ['success', 'info', 'warning'].forEach(function (t, i) {
+        setTimeout(function () {
+          Auralert.notify({
+            title: 'Notificación ' + (i + 1),
+            message: 'Apiladas en la esquina superior derecha',
+            type: t
+          });
+        }, i * 200);
+      });
+    });
+
+    document.getElementById('aaLight').addEventListener('click', function () {
+      Auralert.setTheme('light');
+      Auralert.toast({ message: 'Tema Auralert: light', type: 'info' });
+    });
+    document.getElementById('aaDark').addEventListener('click', function () {
+      Auralert.setTheme('dark');
+      Auralert.toast({ message: 'Tema Auralert: dark', type: 'info' });
+    });
+    document.getElementById('aaAuto').addEventListener('click', function () {
+      Auralert.setTheme('auto');
+      Auralert.toast({ message: 'Tema Auralert: auto (sistema)', type: 'info' });
+    });
+
+    document.getElementById('djangoAjaxDemo').addEventListener('click', function () {
+      setTimeout(function () {
+        var ok = Math.random() > 0.3;
+        if (ok) {
+          Auralert.toast({ message: 'Reserva creada (simulado)', type: 'success' });
+        } else {
+          Auralert.notify({
+            title: 'Error de reserva',
+            message: 'El horario ya no está disponible.',
+            type: 'error'
+          });
+        }
+      }, 400);
+    });
+
+    var pageDark = false;
+    document.getElementById('pageThemeToggle').addEventListener('click', function () {
+      pageDark = !pageDark;
+      document.body.classList.toggle('dark-demo', pageDark);
+      this.textContent = 'Tema página: ' + (pageDark ? 'oscuro' : 'claro');
+    });
+  </script>
+</body>
+</html>
