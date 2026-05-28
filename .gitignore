@@ -17,4 +17,9 @@ demo/pro-preview.html
 
 # Licencias generadas / DB local
 data/licenses-db.json
+data/store.json
 *.license.txt
+
+server/node_modules/
+server/.env
+pro/api-config.js

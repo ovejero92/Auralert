@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal Pro — Auralert</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg: #070b14; --card: rgba(15,23,42,.92); --text: #f1f5f9; --muted: #94a3b8; --border: rgba(148,163,184,.2); --accent: #818cf8; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: Inter, system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+    #gate { min-height: 100vh; display: grid; place-items: center; padding: 24px;
+      background: radial-gradient(800px 400px at 50% 0%, rgba(129,140,248,.2), transparent 65%); }
+    #gate .box { width: 100%; max-width: 420px; background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 2rem; }
+    #gate h1 { margin: 0 0 .5rem; font-size: 1.5rem; }
+    #gate p { color: var(--muted); font-size: 14px; line-height: 1.55; }
+    #gate input { width: 100%; margin: 12px 0; padding: 12px; border-radius: 10px; border: 1px solid var(--border);
+      background: #020617; color: var(--text); font-family: ui-monospace, monospace; }
+    #gate button { width: 100%; padding: 12px; border: none; border-radius: 10px; background: var(--accent); color: #0f172a;
+      font-weight: 700; cursor: pointer; font-family: inherit; }
+    #gate .err { color: #fca5a5; font-size: 13px; margin-top: 8px; min-height: 1.2em; }
+  </style>
+  <script src="api-config.example.js"></script>
+</head>
+<body>
+  <div id="gate">
+    <div class="box">
+      <h1>Portal Pro</h1>
+      <p>Solo licencias activas. Pegá la que recibiste por email tras la compra.</p>
+      <input id="gate-license" placeholder="AURAL-XXXX-XXXX-XXXXXXXX" autocomplete="off">
+      <button type="button" id="gate-enter">Entrar</button>
+      <p class="err" id="gate-err"></p>
+      <p style="margin-top:16px;font-size:13px"><a href="index.html" style="color:var(--accent)">Comprar Pro</a> · <a href="../demo/" style="color:var(--muted)">Docs gratis</a></p>
+    </div>
+  </div>
+
+  <div id="app" hidden>
+    <header style="text-align:center;padding:2rem 1.25rem 1rem;background:radial-gradient(800px 400px at 50% 0%, rgba(129,140,248,.22), transparent 65%)">
+      <h1 style="margin:0;font-size:2rem">Auralert Pro</h1>
+      <p style="color:var(--muted);max-width:520px;margin:.6rem auto 0">Portal exclusivo — skins y animaciones en vivo</p>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:1rem">
+        <a href="index.html" style="color:var(--text);text-decoration:none;padding:8px 14px;border:1px solid var(--border);border-radius:8px;font-size:13px">Tienda</a>
+        <a href="../demo/" style="color:var(--text);text-decoration:none;padding:8px 14px;border:1px solid var(--border);border-radius:8px;font-size:13px">Docs gratis</a>
+        <button type="button" id="btn-logout" style="padding:8px 14px;border:1px solid var(--border);border-radius:8px;background:transparent;color:var(--text);cursor:pointer;font-size:13px">Salir</button>
+      </div>
+    </header>
+    <main style="max-width:960px;margin:0 auto;padding:0 1.25rem 3rem">
+      <section style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.25rem;margin-bottom:1rem">
+        <h2 style="margin:0 0 .75rem;font-size:1.1rem">Skins</h2>
+        <div style="display:flex;flex-wrap:wrap;gap:8px">
+          <button type="button" class="skin-btn" data-skin="marble">Mármol</button>
+          <button type="button" class="skin-btn" data-skin="gold">Oro</button>
+          <button type="button" class="skin-btn" data-skin="glass">Glass</button>
+          <button type="button" class="skin-btn" data-skin="neon">Neón</button>
+        </div>
+      </section>
+      <section style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.25rem;margin-bottom:1rem">
+        <h2 style="margin:0 0 .75rem;font-size:1.1rem">Animaciones</h2>
+        <div style="display:flex;flex-wrap:wrap;gap:8px">
+          <button type="button" data-anim="spring">Spring</button>
+          <button type="button" data-anim="glow">Glow</button>
+          <button type="button" data-anim="none">None</button>
+        </div>
+      </section>
+      <section style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.25rem">
+        <h2 style="margin:0 0 .75rem;font-size:1.1rem">Componentes</h2>
+        <div style="display:flex;flex-wrap:wrap;gap:8px">
+          <button type="button" id="p-toast">Toast</button>
+          <button type="button" id="p-modal">Modal</button>
+          <button type="button" id="p-notify">Notify</button>
+          <button type="button" id="p-banner">Banner</button>
+        </div>
+        <p style="color:var(--muted);font-size:13px;margin-top:12px">
+          <a id="dl-link" href="#" style="color:var(--accent)">Descargar auralert-pro.min.js</a> para tu proyecto
+        </p>
+      </section>
+    </main>
+  </div>
+
+  <script src="checkout.js"></script>
+  <script>
+    var activeLicense = '';
+    var currentSkin = 'gold';
+    var currentAnim = 'spring';
+
+    function showApp() {
+      document.getElementById('gate').hidden = true;
+      document.getElementById('app').hidden = false;
+      document.getElementById('dl-link').href = AuralertCheckout.downloadUrl(activeLicense);
+    }
+
+    async function enterPortal(license) {
+      var key = String(license || '').trim().toUpperCase();
+      document.getElementById('gate-err').textContent = 'Verificando…';
+      try {
+        var r = await AuralertCheckout.validateLicense(key);
+        if (!r.valid) {
+          document.getElementById('gate-err').textContent = 'Licencia inválida o no registrada. Usá el email de compra si creés que es un error.';
+          return;
+        }
+        activeLicense = key;
+        sessionStorage.setItem('auralert_portal_license', key);
+
+        var src = AuralertCheckout.downloadUrl(key);
+        if (!AuralertCheckout.apiBase()) {
+          src = '../dist/auralert-pro.min.js';
+        }
+        await new Promise(function (resolve, reject) {
+          var s = document.createElement('script');
+          s.src = src;
+          s.onload = resolve;
+          s.onerror = function () {
+            reject(new Error('No se pudo cargar el bundle Pro. En local: node build-pro.js'));
+          };
+          document.body.appendChild(s);
+        });
+
+        var ok = await Auralert.activate(key);
+        if (!ok) {
+          document.getElementById('gate-err').textContent = 'Firma válida en servidor pero no coincide con este build.';
+          return;
+        }
+        Auralert.setSkin(currentSkin);
+        Auralert.setAnimation(currentAnim);
+        showApp();
+        wireDemo();
+      } catch (e) {
+        document.getElementById('gate-err').textContent = e.message || String(e);
+      }
+    }
+
+    function wireDemo() {
+      function req() {
+        return Auralert.isPro && Auralert.isPro();
+      }
+      document.querySelectorAll('.skin-btn, [data-skin]').forEach(function (btn) {
+        btn.onclick = function () {
+          if (!req()) return;
+          currentSkin = btn.dataset.skin;
+          Auralert.setSkin(currentSkin);
+          Auralert.toast({ message: 'Skin: ' + currentSkin, type: 'success', skin: currentSkin, animation: currentAnim });
+        };
+      });
+      document.querySelectorAll('[data-anim]').forEach(function (btn) {
+        btn.onclick = function () {
+          if (!req()) return;
+          currentAnim = btn.dataset.anim;
+          Auralert.setAnimation(currentAnim);
+        };
+      });
+      document.getElementById('p-toast').onclick = function () {
+        if (!req()) return;
+        Auralert.toast({ message: 'Toast Pro', type: 'success', skin: currentSkin, animation: currentAnim });
+      };
+      document.getElementById('p-modal').onclick = async function () {
+        if (!req()) return;
+        await Auralert.modal({ title: 'Modal Pro', message: 'Skin ' + currentSkin, type: 'info', skin: currentSkin, showCancel: true });
+      };
+      document.getElementById('p-notify').onclick = function () {
+        if (!req()) return;
+        Auralert.notify({ title: 'Notify', message: 'Pro', type: 'success', skin: currentSkin });
+      };
+      document.getElementById('p-banner').onclick = function () {
+        if (!req()) return;
+        Auralert.banner({ message: 'Banner Pro', type: 'info', skin: currentSkin });
+      };
+    }
+
+    document.getElementById('gate-enter').onclick = function () {
+      enterPortal(document.getElementById('gate-license').value);
+    };
+
+    document.getElementById('btn-logout').onclick = function () {
+      sessionStorage.removeItem('auralert_portal_license');
+      Auralert.deactivate && Auralert.deactivate();
+      location.reload();
+    };
+
+    (function init() {
+      var q = new URLSearchParams(location.search).get('license');
+      var saved = sessionStorage.getItem('auralert_portal_license') || q;
+      if (saved) {
+        document.getElementById('gate-license').value = saved;
+        enterPortal(saved);
+      }
+    })();
+  </script>
+</body>
+</html>
