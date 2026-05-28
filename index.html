@@ -10,8 +10,10 @@
     body {
       margin: 0;
       font-family: system-ui, sans-serif;
-      background: linear-gradient(160deg, #f8fafc 0%, #eef2ff 100%);
-      color: #0f172a;
+      background: radial-gradient(1100px 520px at 50% 0%, rgba(37,99,235,.28), transparent 60%),
+                  radial-gradient(900px 420px at 50% 20%, rgba(99,102,241,.25), transparent 62%),
+                  linear-gradient(180deg, #050816 0%, #070b14 55%, #070b14 100%);
+      color: #e2e8f0;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
@@ -20,8 +22,55 @@
       padding: 2rem;
       text-align: center;
     }
-    h1 { font-size: 2.5rem; margin: 0 0 0.5rem; }
-    p { max-width: 520px; color: #475569; line-height: 1.6; }
+    h1 { font-size: clamp(2.6rem, 6vw, 3.4rem); margin: 0 0 0.65rem; letter-spacing: -0.02em; }
+    p { max-width: 560px; color: rgba(226,232,240,.78); line-height: 1.65; }
+
+    .logo {
+      position: relative;
+      display: inline-block;
+      padding: 0;
+      margin: 0;
+      line-height: 1;
+    }
+    .logo svg { display: block; width: min(560px, 92vw); height: auto; margin: 0 auto; }
+    .logo canvas {
+      position: absolute;
+      inset: -40% -10%;
+      width: 120%;
+      height: 180%;
+      z-index: -2;
+      pointer-events: none;
+      opacity: .95;
+      filter: blur(.2px);
+    }
+    .logo text {
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    /* Backdrop haze behind the aura (adds depth) */
+    .logo::before {
+      content: "";
+      position: absolute;
+      inset: -50% -18%;
+      background:
+        radial-gradient(closest-side, rgba(59,130,246,.22), transparent 70%),
+        radial-gradient(closest-side, rgba(147,197,253,.18), transparent 72%),
+        radial-gradient(closest-side, rgba(99,102,241,.14), transparent 75%);
+      filter: blur(26px);
+      opacity: .95;
+      z-index: -3;
+      pointer-events: none;
+    }
+    @media (prefers-reduced-motion: no-preference) {
+      .logo::before { animation: auraHaze 3.6s ease-in-out infinite; }
+      @keyframes auraHaze {
+        0%, 100% { transform: scale(1); opacity: .9; }
+        50% { transform: scale(1.06); opacity: 1; }
+      }
+    }
+
     .actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin: 2rem 0 1.5rem; }
     a.btn {
       display: inline-block;
@@ -32,7 +81,7 @@
       font-size: 15px;
     }
     a.primary { background: #6366f1; color: #fff; }
-    a.secondary { background: #fff; color: #6366f1; border: 1px solid #c7d2fe; }
+    a.secondary { background: rgba(2,6,23,.35); color: #e2e8f0; border: 1px solid rgba(148,163,184,.22); }
     pre {
       background: #0f172a;
       color: #e2e8f0;
@@ -43,11 +92,60 @@
       overflow-x: auto;
       max-width: 100%;
     }
-    .note { font-size: 13px; color: #64748b; margin-top: 2rem; }
+    .note { font-size: 13px; color: rgba(226,232,240,.6); margin-top: 2rem; }
   </style>
 </head>
 <body>
-  <h1>Auralert</h1>
+  <h1 class="logo" aria-label="Auralert">
+    <canvas id="auraParticles" aria-hidden="true"></canvas>
+    <svg viewBox="0 0 920 180" role="img" aria-hidden="true">
+      <defs>
+        <!-- Moving energy field -->
+        <filter id="aur-field" x="-35%" y="-80%" width="170%" height="260%" color-interpolation-filters="sRGB">
+          <feTurbulence type="fractalNoise" baseFrequency="0.012" numOctaves="2" seed="7" result="noise">
+            <animate attributeName="baseFrequency" dur="2.2s" values="0.010;0.016;0.011" repeatCount="indefinite" />
+          </feTurbulence>
+          <feDisplacementMap in="SourceGraphic" in2="noise" scale="18" xChannelSelector="R" yChannelSelector="G" result="displaced"/>
+          <feGaussianBlur in="displaced" stdDeviation="3.2" result="blur1"/>
+          <feColorMatrix in="blur1" type="matrix" values="
+            0 0 0 0 0.10
+            0 0 0 0 0.45
+            0 0 0 0 1.00
+            0 0 0 0.92 0" result="blue1"/>
+          <feGaussianBlur in="blue1" stdDeviation="7" result="glow"/>
+          <feMerge>
+            <feMergeNode in="glow"/>
+            <feMergeNode in="blue1"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+
+        <!-- Inner crisp glow -->
+        <filter id="aur-inner" x="-20%" y="-40%" width="140%" height="180%" color-interpolation-filters="sRGB">
+          <feGaussianBlur stdDeviation="1.2" result="b"/>
+          <feColorMatrix in="b" type="matrix" values="
+            0 0 0 0 0.30
+            0 0 0 0 0.60
+            0 0 0 0 1.00
+            0 0 0 0.9 0" result="c"/>
+          <feMerge>
+            <feMergeNode in="c"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+      </defs>
+
+      <!-- Outer animated aura -->
+      <g filter="url(#aur-field)" opacity="0.95">
+        <text x="50%" y="112" text-anchor="middle" font-size="96" fill="#dbeafe">Auralert</text>
+      </g>
+
+      <!-- Core text -->
+      <g filter="url(#aur-inner)">
+        <text x="50%" y="112" text-anchor="middle" font-size="96" fill="#f8fafc">Auralert</text>
+      </g>
+    </svg>
+  </h1>
   <p>Librería JavaScript universal para alertas. Funciona en cualquier framework con un solo <code>&lt;script&gt;</code>.</p>
 
   <div class="actions">
@@ -60,5 +158,86 @@
 &lt;script&gt;Auralert.toast({ message: '¡Hola!', type: 'success' });&lt;/script&gt;</code></pre>
 
   <p class="note">La documentación interactiva está en <strong>/demo/</strong> — instalación, integraciones y ejemplos en vivo.</p>
+
+  <script>
+    (function () {
+      if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      var canvas = document.getElementById('auraParticles');
+      if (!canvas) return;
+      var host = canvas.parentElement;
+      var ctx = canvas.getContext('2d');
+      var dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+      var particles = [];
+      var max = 42;
+
+      function resize() {
+        var r = host.getBoundingClientRect();
+        // canvas is bigger than text area for aura spread
+        var w = Math.max(260, r.width * 1.25);
+        var h = Math.max(180, r.height * 1.7);
+        canvas.width = Math.floor(w * dpr);
+        canvas.height = Math.floor(h * dpr);
+        canvas.style.left = (-0.125 * r.width) + 'px';
+        canvas.style.top = (-0.35 * r.height) + 'px';
+      }
+
+      function spawn() {
+        var w = canvas.width / dpr;
+        var h = canvas.height / dpr;
+        var x = w * (0.12 + Math.random() * 0.76);
+        var y = h * (0.65 + Math.random() * 0.25);
+        particles.push({
+          x: x,
+          y: y,
+          vx: (Math.random() - 0.5) * 0.12,
+          vy: -(0.55 + Math.random() * 1.05),
+          r: 0.6 + Math.random() * 1.8,
+          a: 0.22 + Math.random() * 0.45,
+          life: 0,
+          ttl: 70 + Math.random() * 90
+        });
+      }
+
+      function step() {
+        var w = canvas.width;
+        var h = canvas.height;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        ctx.clearRect(0, 0, w, h);
+
+        // soft additive glow
+        ctx.globalCompositeOperation = 'lighter';
+        for (var i = particles.length - 1; i >= 0; i--) {
+          var p = particles[i];
+          p.life++;
+          p.x += p.vx;
+          p.y += p.vy;
+          // slight flicker
+          var flick = 0.75 + 0.25 * Math.sin((p.life / 6) + i);
+          var alpha = p.a * flick * (1 - (p.life / p.ttl));
+          ctx.beginPath();
+          var g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 8);
+          g.addColorStop(0, 'rgba(147,197,253,' + (alpha * 1.05) + ')');
+          g.addColorStop(0.45, 'rgba(59,130,246,' + (alpha * 0.65) + ')');
+          g.addColorStop(1, 'rgba(99,102,241,0)');
+          ctx.fillStyle = g;
+          ctx.arc(p.x, p.y, p.r * 8, 0, Math.PI * 2);
+          ctx.fill();
+
+          if (p.life > p.ttl || p.y < -20) particles.splice(i, 1);
+        }
+        ctx.globalCompositeOperation = 'source-over';
+
+        while (particles.length < max) spawn();
+        requestAnimationFrame(step);
+      }
+
+      resize();
+      window.addEventListener('resize', function () {
+        resize();
+      });
+      for (var i = 0; i < max; i++) spawn();
+      requestAnimationFrame(step);
+    })();
+  </script>
 </body>
 </html>

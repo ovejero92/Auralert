@@ -68,6 +68,80 @@
 .auralert-root[data-aa-skin="neon"] .aa-modal-title { text-shadow: 0 0 12px rgba(129, 140, 248, 0.6); }
 
 /* Pro animations */
+.auralert-root.aa-pro .aa-modal,
+.auralert-root.aa-pro .aa-toast,
+.auralert-root.aa-pro .aa-notify,
+.auralert-root.aa-pro .aa-banner {
+  transition:
+    background 0.35s ease,
+    border-color 0.35s ease,
+    box-shadow 0.35s ease,
+    filter 0.35s ease,
+    transform 0.35s ease;
+}
+
+/* Skin transition "charge" flash */
+.auralert-root.aa-pro.aa-pro-skin-transition .aa-modal,
+.auralert-root.aa-pro.aa-pro-skin-transition .aa-toast,
+.auralert-root.aa-pro.aa-pro-skin-transition .aa-notify,
+.auralert-root.aa-pro.aa-pro-skin-transition .aa-banner {
+  animation: aa-pro-skin-charge 0.52s ease both !important;
+}
+
+@keyframes aa-pro-skin-charge {
+  0% { filter: brightness(1) saturate(1); box-shadow: 0 0 0 rgba(59,130,246,0); }
+  40% { filter: brightness(1.25) saturate(1.35); box-shadow: 0 0 0 1px rgba(147,197,253,.18), 0 0 26px rgba(59,130,246,.25); }
+  100% { filter: brightness(1) saturate(1); box-shadow: inherit; }
+}
+
+/* Type effects (works for any Pro animation except none) */
+.auralert-root.aa-pro:not(.aa-pro-anim-none) .aa-modal[data-type="error"],
+.auralert-root.aa-pro:not(.aa-pro-anim-none) .aa-toast[data-type="error"],
+.auralert-root.aa-pro:not(.aa-pro-anim-none) .aa-notify[data-type="error"],
+.auralert-root.aa-pro:not(.aa-pro-anim-none) .aa-banner[data-type="error"] {
+  animation-name: aa-pro-type-error-shake !important;
+  animation-duration: 0.55s !important;
+  animation-timing-function: ease !important;
+}
+
+.auralert-root.aa-pro:not(.aa-pro-anim-none) .aa-modal[data-type="warning"],
+.auralert-root.aa-pro:not(.aa-pro-anim-none) .aa-toast[data-type="warning"],
+.auralert-root.aa-pro:not(.aa-pro-anim-none) .aa-notify[data-type="warning"],
+.auralert-root.aa-pro:not(.aa-pro-anim-none) .aa-banner[data-type="warning"] {
+  animation-name: aa-pro-type-warning-pulse !important;
+  animation-duration: 0.85s !important;
+  animation-timing-function: ease-in-out !important;
+}
+
+.auralert-root.aa-pro:not(.aa-pro-anim-none) .aa-toast[data-type="success"] .aa-toast-icon,
+.auralert-root.aa-pro:not(.aa-pro-anim-none) .aa-modal[data-type="success"] .aa-modal-icon,
+.auralert-root.aa-pro:not(.aa-pro-anim-none) .aa-notify[data-type="success"] .aa-notify-icon,
+.auralert-root.aa-pro:not(.aa-pro-anim-none) .aa-banner[data-type="success"] .aa-banner-icon {
+  animation: aa-pro-type-success-spark 0.9s ease-out both;
+}
+
+@keyframes aa-pro-type-error-shake {
+  0% { transform: translateX(0); }
+  18% { transform: translateX(-10px); }
+  32% { transform: translateX(8px); }
+  46% { transform: translateX(-6px); }
+  60% { transform: translateX(4px); }
+  74% { transform: translateX(-2px); }
+  100% { transform: translateX(0); }
+}
+
+@keyframes aa-pro-type-warning-pulse {
+  0%, 100% { box-shadow: 0 0 0 rgba(245,158,11,0), 0 0 0 rgba(251,191,36,0); }
+  35% { box-shadow: 0 0 0 1px rgba(251,191,36,.22), 0 0 28px rgba(245,158,11,.18); }
+  70% { box-shadow: 0 0 0 1px rgba(251,191,36,.12), 0 0 18px rgba(245,158,11,.12); }
+}
+
+@keyframes aa-pro-type-success-spark {
+  0% { transform: scale(0.9); filter: brightness(1.2); box-shadow: 0 0 0 rgba(34,197,94,0); }
+  35% { transform: scale(1.12); filter: brightness(1.5); box-shadow: 0 0 0 1px rgba(34,197,94,.22), 0 0 26px rgba(34,197,94,.22); }
+  100% { transform: scale(1); filter: none; box-shadow: none; }
+}
+
 .auralert-root.aa-pro-anim-spring .aa-modal {
   animation: aa-pro-modal-spring 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) forwards !important;
 }
@@ -77,8 +151,108 @@
   animation: aa-pro-toast-spring 0.5s cubic-bezier(0.34, 1.45, 0.64, 1) forwards !important;
 }
 
+.auralert-root.aa-pro-anim-spring .aa-toast.aa-exit-top-right,
+.auralert-root.aa-pro-anim-spring .aa-toast.aa-exit-bottom-right {
+  animation: aa-pro-toast-spring-out 0.34s ease forwards !important;
+}
+.auralert-root.aa-pro-anim-spring .aa-banner.aa-exit-top,
+.auralert-root.aa-pro-anim-spring .aa-banner.aa-exit-bottom {
+  animation: aa-pro-banner-spring-out 0.32s ease forwards !important;
+}
+.auralert-root.aa-pro-anim-spring .aa-notify.aa-exit {
+  animation: aa-pro-notify-spring-out 0.32s ease forwards !important;
+}
+.auralert-root.aa-pro-anim-spring.aa-modal-overlay.aa-closing .aa-modal {
+  animation: aa-pro-modal-spring-out 0.28s ease forwards !important;
+}
+
 .auralert-root.aa-pro-anim-glow .aa-modal {
   animation: aa-pro-modal-glow 0.4s ease forwards, aa-pro-pulse 2.5s ease-in-out 0.4s infinite !important;
+}
+
+.auralert-root.aa-pro-anim-glow .aa-toast.aa-enter-top-right,
+.auralert-root.aa-pro-anim-glow .aa-toast.aa-enter-bottom-right {
+  animation: aa-pro-toast-glow 0.45s ease forwards !important;
+}
+.auralert-root.aa-pro-anim-glow .aa-toast.aa-exit-top-right,
+.auralert-root.aa-pro-anim-glow .aa-toast.aa-exit-bottom-right {
+  animation: aa-pro-toast-glow-out 0.3s ease forwards !important;
+}
+.auralert-root.aa-pro-anim-glow .aa-banner.aa-exit-top,
+.auralert-root.aa-pro-anim-glow .aa-banner.aa-exit-bottom {
+  animation: aa-pro-banner-glow-out 0.28s ease forwards !important;
+}
+.auralert-root.aa-pro-anim-glow .aa-notify.aa-exit {
+  animation: aa-pro-notify-glow-out 0.28s ease forwards !important;
+}
+.auralert-root.aa-pro-anim-glow.aa-modal-overlay.aa-closing .aa-modal {
+  animation: aa-pro-modal-glow-out 0.25s ease forwards !important;
+}
+
+.auralert-root.aa-pro-anim-warp .aa-modal {
+  animation: aa-pro-modal-warp 0.5s cubic-bezier(0.2, 1.2, 0.2, 1) forwards !important;
+}
+.auralert-root.aa-pro-anim-warp .aa-toast.aa-enter-top-right,
+.auralert-root.aa-pro-anim-warp .aa-toast.aa-enter-bottom-right {
+  animation: aa-pro-toast-warp 0.46s cubic-bezier(0.2, 1.2, 0.2, 1) forwards !important;
+}
+.auralert-root.aa-pro-anim-warp .aa-toast.aa-exit-top-right,
+.auralert-root.aa-pro-anim-warp .aa-toast.aa-exit-bottom-right {
+  animation: aa-pro-toast-warp-out 0.28s ease forwards !important;
+}
+.auralert-root.aa-pro-anim-warp .aa-banner.aa-exit-top,
+.auralert-root.aa-pro-anim-warp .aa-banner.aa-exit-bottom {
+  animation: aa-pro-banner-warp-out 0.28s ease forwards !important;
+}
+.auralert-root.aa-pro-anim-warp .aa-notify.aa-exit {
+  animation: aa-pro-notify-warp-out 0.28s ease forwards !important;
+}
+.auralert-root.aa-pro-anim-warp.aa-modal-overlay.aa-closing .aa-modal {
+  animation: aa-pro-modal-warp-out 0.24s ease forwards !important;
+}
+
+.auralert-root.aa-pro-anim-electric .aa-modal {
+  animation: aa-pro-modal-electric 0.55s ease forwards !important;
+}
+.auralert-root.aa-pro-anim-electric .aa-toast.aa-enter-top-right,
+.auralert-root.aa-pro-anim-electric .aa-toast.aa-enter-bottom-right {
+  animation: aa-pro-toast-electric 0.5s ease forwards !important;
+}
+.auralert-root.aa-pro-anim-electric .aa-toast.aa-exit-top-right,
+.auralert-root.aa-pro-anim-electric .aa-toast.aa-exit-bottom-right {
+  animation: aa-pro-toast-electric-out 0.32s ease forwards !important;
+}
+.auralert-root.aa-pro-anim-electric .aa-banner.aa-exit-top,
+.auralert-root.aa-pro-anim-electric .aa-banner.aa-exit-bottom {
+  animation: aa-pro-banner-electric-out 0.3s ease forwards !important;
+}
+.auralert-root.aa-pro-anim-electric .aa-notify.aa-exit {
+  animation: aa-pro-notify-electric-out 0.3s ease forwards !important;
+}
+.auralert-root.aa-pro-anim-electric.aa-modal-overlay.aa-closing .aa-modal {
+  animation: aa-pro-modal-electric-out 0.28s ease forwards !important;
+}
+
+.auralert-root.aa-pro-anim-float .aa-modal {
+  animation: aa-pro-modal-float 0.55s ease forwards, aa-pro-float 2.8s ease-in-out 0.55s infinite !important;
+}
+.auralert-root.aa-pro-anim-float .aa-toast.aa-enter-top-right,
+.auralert-root.aa-pro-anim-float .aa-toast.aa-enter-bottom-right {
+  animation: aa-pro-toast-float 0.55s ease forwards !important;
+}
+.auralert-root.aa-pro-anim-float .aa-toast.aa-exit-top-right,
+.auralert-root.aa-pro-anim-float .aa-toast.aa-exit-bottom-right {
+  animation: aa-pro-toast-float-out 0.34s ease forwards !important;
+}
+.auralert-root.aa-pro-anim-float .aa-banner.aa-exit-top,
+.auralert-root.aa-pro-anim-float .aa-banner.aa-exit-bottom {
+  animation: aa-pro-banner-float-out 0.32s ease forwards !important;
+}
+.auralert-root.aa-pro-anim-float .aa-notify.aa-exit {
+  animation: aa-pro-notify-float-out 0.32s ease forwards !important;
+}
+.auralert-root.aa-pro-anim-float.aa-modal-overlay.aa-closing .aa-modal {
+  animation: aa-pro-modal-float-out 0.26s ease forwards !important;
 }
 
 @keyframes aa-pro-modal-spring {
@@ -93,12 +267,166 @@
   100% { opacity: 1; transform: translateX(0) scale(1); }
 }
 
+@keyframes aa-pro-modal-spring-out {
+  from { opacity: 1; transform: scale(1) translateY(0); }
+  to { opacity: 0; transform: scale(0.92) translateY(8px); }
+}
+
+@keyframes aa-pro-toast-spring-out {
+  from { opacity: 1; transform: translateX(0) scale(1); }
+  to { opacity: 0; transform: translateX(120%) scale(0.96); }
+}
+
+@keyframes aa-pro-notify-spring-out {
+  from { opacity: 1; transform: translateX(0); }
+  to { opacity: 0; transform: translateX(120%); }
+}
+
+@keyframes aa-pro-banner-spring-out {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-100%); }
+}
+
 @keyframes aa-pro-modal-glow {
   from { opacity: 0; transform: scale(0.85); filter: brightness(1.4); }
   to { opacity: 1; transform: scale(1); filter: brightness(1); }
 }
 
+@keyframes aa-pro-modal-glow-out {
+  from { opacity: 1; transform: scale(1); filter: brightness(1.1); }
+  to { opacity: 0; transform: scale(0.9); filter: brightness(1.4); }
+}
+
+@keyframes aa-pro-toast-glow {
+  from { opacity: 0; transform: translateX(120%) scale(0.95); filter: brightness(1.4); }
+  to { opacity: 1; transform: translateX(0) scale(1); filter: brightness(1); }
+}
+
+@keyframes aa-pro-toast-glow-out {
+  from { opacity: 1; transform: translateX(0) scale(1); filter: brightness(1.1); }
+  to { opacity: 0; transform: translateX(120%) scale(0.96); filter: brightness(1.5); }
+}
+
+@keyframes aa-pro-notify-glow-out {
+  from { opacity: 1; transform: translateX(0); filter: brightness(1.1); }
+  to { opacity: 0; transform: translateX(120%); filter: brightness(1.4); }
+}
+
+@keyframes aa-pro-banner-glow-out {
+  from { opacity: 1; transform: translateY(0); filter: brightness(1.1); }
+  to { opacity: 0; transform: translateY(-100%); filter: brightness(1.35); }
+}
+
 @keyframes aa-pro-pulse {
   0%, 100% { box-shadow: 0 0 24px rgba(99, 102, 241, 0.25); }
   50% { box-shadow: 0 0 36px rgba(139, 92, 246, 0.4); }
+}
+
+@keyframes aa-pro-modal-warp {
+  0% { opacity: 0; transform: perspective(900px) rotateX(18deg) scale(0.7) translateY(18px); filter: blur(10px) brightness(1.2); }
+  70% { transform: perspective(900px) rotateX(-3deg) scale(1.02) translateY(-3px); filter: blur(0) brightness(1); }
+  100% { opacity: 1; transform: perspective(900px) rotateX(0) scale(1) translateY(0); filter: none; }
+}
+
+@keyframes aa-pro-modal-warp-out {
+  from { opacity: 1; transform: perspective(900px) rotateX(0) scale(1); filter: none; }
+  to { opacity: 0; transform: perspective(900px) rotateX(16deg) scale(0.8) translateY(12px); filter: blur(10px) brightness(1.2); }
+}
+
+@keyframes aa-pro-toast-warp {
+  0% { opacity: 0; transform: translateX(140%) scale(0.8); filter: blur(10px); }
+  60% { transform: translateX(-10px) scale(1.02); filter: blur(0); }
+  100% { opacity: 1; transform: translateX(0) scale(1); filter: none; }
+}
+
+@keyframes aa-pro-toast-warp-out {
+  from { opacity: 1; transform: translateX(0) scale(1); filter: none; }
+  to { opacity: 0; transform: translateX(140%) scale(0.86); filter: blur(10px); }
+}
+
+@keyframes aa-pro-notify-warp-out {
+  from { opacity: 1; transform: translateX(0); filter: none; }
+  to { opacity: 0; transform: translateX(140%); filter: blur(8px); }
+}
+
+@keyframes aa-pro-banner-warp-out {
+  from { opacity: 1; transform: translateY(0); filter: none; }
+  to { opacity: 0; transform: translateY(-100%); filter: blur(8px); }
+}
+
+@keyframes aa-pro-modal-electric {
+  0% { opacity: 0; transform: scale(0.78) translateY(18px); filter: brightness(1.3) contrast(1.1); }
+  25% { transform: translateX(-8px) scale(0.92); }
+  40% { transform: translateX(6px) scale(1.01); }
+  55% { transform: translateX(-3px) scale(0.99); }
+  70% { transform: translateX(2px) scale(1); }
+  100% { opacity: 1; transform: translateX(0) scale(1) translateY(0); filter: none; }
+}
+
+@keyframes aa-pro-modal-electric-out {
+  from { opacity: 1; transform: translateX(0) scale(1); filter: none; }
+  35% { transform: translateX(10px) scale(0.98); filter: brightness(1.2); }
+  70% { transform: translateX(-8px) scale(0.94); filter: brightness(1.35) contrast(1.1); }
+  to { opacity: 0; transform: translateX(0) scale(0.88); filter: brightness(1.5) contrast(1.15); }
+}
+
+@keyframes aa-pro-toast-electric {
+  0% { opacity: 0; transform: translateX(120%) scale(0.92); }
+  35% { transform: translateX(-14px) scale(1.03); }
+  50% { transform: translateX(8px) scale(1); }
+  65% { transform: translateX(-4px) scale(1); }
+  100% { opacity: 1; transform: translateX(0) scale(1); }
+}
+
+@keyframes aa-pro-toast-electric-out {
+  from { opacity: 1; transform: translateX(0) scale(1); }
+  45% { transform: translateX(-10px) scale(0.98); }
+  to { opacity: 0; transform: translateX(120%) scale(0.92); }
+}
+
+@keyframes aa-pro-notify-electric-out {
+  from { opacity: 1; transform: translateX(0) scale(1); }
+  55% { transform: translateX(-12px) scale(0.98); }
+  to { opacity: 0; transform: translateX(120%) scale(0.92); }
+}
+
+@keyframes aa-pro-banner-electric-out {
+  from { opacity: 1; transform: translateY(0); }
+  55% { transform: translateY(-8px); }
+  to { opacity: 0; transform: translateY(-100%); }
+}
+
+@keyframes aa-pro-modal-float {
+  0% { opacity: 0; transform: translateY(22px) scale(0.92); filter: blur(3px); }
+  100% { opacity: 1; transform: translateY(0) scale(1); filter: none; }
+}
+
+@keyframes aa-pro-modal-float-out {
+  from { opacity: 1; transform: translateY(0) scale(1); filter: none; }
+  to { opacity: 0; transform: translateY(14px) scale(0.96); filter: blur(3px); }
+}
+
+@keyframes aa-pro-toast-float {
+  0% { opacity: 0; transform: translateX(110%) translateY(10px) scale(0.96); }
+  100% { opacity: 1; transform: translateX(0) translateY(0) scale(1); }
+}
+
+@keyframes aa-pro-toast-float-out {
+  from { opacity: 1; transform: translateX(0) translateY(0) scale(1); }
+  to { opacity: 0; transform: translateX(110%) translateY(10px) scale(0.96); }
+}
+
+@keyframes aa-pro-notify-float-out {
+  from { opacity: 1; transform: translateX(0) translateY(0); }
+  to { opacity: 0; transform: translateX(120%) translateY(8px); }
+}
+
+@keyframes aa-pro-banner-float-out {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-100%); }
+}
+
+@keyframes aa-pro-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
 }

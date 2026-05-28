@@ -6,7 +6,7 @@
 
   var PRO_STYLES = /* AURALERT_PRO_STYLES */ '';
   var SKINS = ['glass', 'marble', 'gold', 'neon'];
-  var ANIMATIONS = ['spring', 'glow', 'none'];
+  var ANIMATIONS = ['spring', 'glow', 'warp', 'electric', 'float', 'none'];
 
   var LICENSE_KEY = 'auralert_pro_license';
   var licenseActive = false;
@@ -37,10 +37,25 @@
     document.querySelectorAll('.auralert-root').forEach(fn);
   }
 
+  function markProRoots() {
+    applyToAllRoots(function (root) {
+      root.classList.add('aa-pro');
+    });
+  }
+
   function applySkinToRoots(skin) {
     applyToAllRoots(function (root) {
       if (skin) root.setAttribute('data-aa-skin', skin);
       else root.removeAttribute('data-aa-skin');
+    });
+  }
+
+  function flashSkinTransition() {
+    applyToAllRoots(function (root) {
+      root.classList.add('aa-pro-skin-transition');
+      setTimeout(function () {
+        root.classList.remove('aa-pro-skin-transition');
+      }, 520);
     });
   }
 
@@ -204,6 +219,7 @@
         persistLicense(licenseKey);
         injectProStyles();
         installWrappers();
+        markProRoots();
         applySkinToRoots(currentSkin);
         applyAnimationToRoots(currentAnimation);
       }
@@ -238,7 +254,9 @@
     }
     currentSkin = skin;
     injectProStyles();
+    markProRoots();
     applySkinToRoots(skin);
+    flashSkinTransition();
     return skin;
   }
 
