@@ -1,4 +1,20 @@
 PERSONAL_NOTES.md
+license.secret
+license.secret.*
+!license.secret.example
 node_modules/
 .DS_Store
 *.log
+.env
+.env.*
+!.env.example
+data/
+
+# Pro — no publicar el bundle de pago en GitHub
+dist/auralert-pro.js
+dist/auralert-pro.min.js
+demo/pro-preview.html
+
+# Licencias generadas / DB local
+data/licenses-db.json
+*.license.txt

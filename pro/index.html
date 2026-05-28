@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auralert Pro</title>
+  <meta name="description" content="Skins premium y animaciones avanzadas para Auralert.">
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: system-ui, sans-serif; background: #0b1220; color: #e2e8f0; }
+    header { padding: 3rem 1.5rem 2rem; text-align: center; background: radial-gradient(900px 420px at 50% 0%, rgba(99,102,241,.35), transparent 60%); }
+    h1 { margin: 0 0 .5rem; font-size: clamp(2rem, 5vw, 3rem); }
+    p { margin: .5rem auto 0; max-width: 760px; color: rgba(226,232,240,.82); line-height: 1.6; }
+    .wrap { max-width: 980px; margin: 0 auto; padding: 0 1.25rem 3rem; }
+    .grid { display: grid; gap: 14px; grid-template-columns: 1fr; }
+    @media (min-width: 760px) { .grid { grid-template-columns: 1fr 1fr; } }
+    .card { background: rgba(15,23,42,.8); border: 1px solid rgba(148,163,184,.18); border-radius: 14px; padding: 1.25rem; }
+    .card h2 { margin: 0 0 .6rem; font-size: 1.1rem; }
+    .muted { color: rgba(226,232,240,.72); font-size: .95rem; }
+    .cta { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 1.25rem; }
+    a.btn { text-decoration: none; font-weight: 700; padding: 12px 18px; border-radius: 10px; }
+    a.primary { background: #6366f1; color: #fff; }
+    a.ghost { background: transparent; border: 1px solid rgba(148,163,184,.25); color: #e2e8f0; }
+    .price { font-size: 2rem; font-weight: 800; margin: .25rem 0; }
+    .row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: .75rem; }
+    button { padding: 10px 12px; border-radius: 10px; border: 1px solid rgba(148,163,184,.25); background: rgba(2,6,23,.4); color: #e2e8f0; cursor: pointer; }
+    button:hover { border-color: rgba(99,102,241,.8); }
+    pre { background: #020617; border-radius: 12px; padding: 1rem; overflow-x: auto; margin: .75rem 0 0; font-size: 12px; }
+    code { font-family: ui-monospace, monospace; }
+    .note { font-size: 12px; color: rgba(226,232,240,.62); margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Auralert Pro</h1>
+    <p>Skins premium (mármol, oro, glass, neón) + animaciones avanzadas. Esta página muestra el concepto; para usarlo necesitás una licencia.</p>
+    <div class="cta">
+      <a class="btn ghost" href="../">← Volver</a>
+      <a class="btn ghost" href="../demo/">Docs gratis</a>
+      <a class="btn ghost" href="demo.html">Demo Pro (con licencia)</a>
+      <a class="btn primary" href="#" id="buy">Comprar Pro — USD 10</a>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="grid">
+      <section class="card">
+        <h2>Qué incluye</h2>
+        <p class="muted">Pensado como upgrade visual. El core gratis sigue siendo completo y configurable.</p>
+        <ul class="muted">
+          <li>Skins premium: marble, gold, glass, neon</li>
+          <li>Animaciones pro: spring, glow</li>
+          <li>Activación por licencia (idealmente validación por dominio)</li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <h2>Precio</h2>
+        <div class="price">USD 10</div>
+        <p class="muted">Recomendación inicial: <strong>pago único</strong> (licencia) para reducir fricción. Luego podés sumar suscripción para updates/soporte.</p>
+        <div class="note">El botón “Comprar” es un placeholder; el checkout real se conecta a Stripe/Lemon Squeezy/Gumroad.</div>
+      </section>
+    </div>
+
+    <section class="card" style="margin-top:14px">
+      <h2>Preview (bloqueado)</h2>
+      <p class="muted">Estos botones intentan usar features Pro. Sin licencia, Auralert muestra un aviso.</p>
+      <div class="row">
+        <button id="tryGold">Pro modal (gold)</button>
+        <button id="tryMarble">Pro toast (marble)</button>
+      </div>
+      <pre><code>&lt;script src=".../auralert.min.js"&gt;&lt;/script&gt;
+&lt;script src=".../auralert-pro.min.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+  await Auralert.activate('TU-LICENCIA');
+  Auralert.setSkin('gold');
+&lt;/script&gt;</code></pre>
+      <p class="note">Nota: esta página carga solo el bundle gratis (a propósito).</p>
+    </section>
+  </main>
+
+  <script src="../dist/auralert.min.js"></script>
+  <script>
+    document.getElementById('buy').addEventListener('click', function (e) {
+      e.preventDefault();
+      Auralert.modal({
+        title: 'Checkout pendiente',
+        message: 'Acá se conecta Stripe / Lemon Squeezy / Gumroad. Por ahora es solo la landing.',
+        type: 'info',
+        showCancel: false
+      });
+    });
+
+    function locked() {
+      Auralert.toast({
+        message: 'Pro preview: para usar skins/animaciones necesitás licencia.',
+        type: 'warning',
+        duration: 4500
+      });
+    }
+
+    document.getElementById('tryGold').addEventListener('click', locked);
+    document.getElementById('tryMarble').addEventListener('click', locked);
+  </script>
+</body>
+</html>
+

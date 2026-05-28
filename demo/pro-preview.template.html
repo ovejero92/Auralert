@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Auralert Pro — preview (solo vos)</title>
+  <style>
+    body { font-family: system-ui; max-width: 680px; margin: 2rem auto; padding: 0 1rem; line-height: 1.5; }
+    input { width: 100%; padding: 10px; margin: 8px 0; font-family: monospace; font-size: 14px; }
+    button { margin: 4px 4px 4px 0; padding: 8px 12px; cursor: pointer; }
+    .status { padding: 12px 14px; border-radius: 8px; margin: 12px 0; font-size: 14px; }
+    .ok { background: #ecfdf5; color: #065f46; }
+    .bad { background: #fef2f2; color: #991b1b; }
+    .warn { background: #fffbeb; color: #92400e; }
+    ol { padding-left: 1.2rem; color: #475569; font-size: 14px; }
+    code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <h1>Pro preview (solo desarrollo)</h1>
+  <p>Copiá a <code>pro-preview.html</code> (gitignored). No subir a GitHub.</p>
+
+  <ol>
+    <li><code>node scripts/generate-license.js</code></li>
+    <li><code>node build.js</code> y <code>node build-pro.js</code></li>
+    <li>Recargá esta página con <strong>Ctrl+Shift+R</strong></li>
+    <li>Pegá la licencia <strong>nueva</strong> (no reutilices una vieja)</li>
+  </ol>
+
+  <div id="status" class="status warn">Esperando licencia…</div>
+
+  <label>Licencia</label>
+  <input id="key" placeholder="AURAL-XXXX-XXXX-XXXXXXXX" autocomplete="off">
+
+  <button type="button" id="verify">Verificar (sin activar)</button>
+  <button type="button" id="activate">Activar</button>
+  <button type="button" id="deactivate">Desactivar</button>
+
+  <h2>Skins (requiere Pro activo)</h2>
+  <button type="button" data-skin="marble">Mármol</button>
+  <button type="button" data-skin="gold">Oro</button>
+  <button type="button" data-skin="glass">Glass</button>
+  <button type="button" data-skin="neon">Neón</button>
+
+  <script src="../dist/auralert-pro.js?v=dev"></script>
+  <script>
+    var statusEl = document.getElementById('status');
+    var keyInput = document.getElementById('key');
+
+    function setStatus(kind, html) {
+      statusEl.className = 'status ' + (kind || 'warn');
+      statusEl.innerHTML = html;
+    }
+
+    if (!window.Auralert || !Auralert.checkLicense) {
+      setStatus('bad', 'No cargó <code>auralert-pro.js</code>. Corré <code>node build-pro.js</code>.');
+    } else if (!window.isSecureContext) {
+      setStatus('warn', 'Contexto no seguro. Usá Live Server / <code>http://localhost</code> (no abras el HTML con doble clic).');
+    }
+
+    document.getElementById('verify').onclick = async function () {
+      var r = await Auralert.checkLicense(keyInput.value);
+      if (r.valid) {
+        setStatus('ok', '✓ Licencia válida para este build. Tocá <strong>Activar</strong>.');
+        return;
+      }
+      var msg = '✗ Inválida — motivo: <code>' + (r.reason || '?') + '</code>';
+      if (r.reason === 'bad_signature') {
+        msg += '<br>Firma esperada: <code>' + r.expected + '</code> · en licencia: <code>' + r.got + '</code>';
+        msg += '<br><br>Generá una licencia nueva con <code>node scripts/generate-license.js</code> y volvé a correr <code>node build-pro.js</code>.';
+      }
+      if (r.reason === 'crypto') msg += '<br>' + (r.error || '');
+      setStatus('bad', msg);
+    };
+
+    document.getElementById('activate').onclick = async function () {
+      setStatus('warn', 'Activando…');
+      var ok = await Auralert.activate(keyInput.value);
+      if (ok) setStatus('ok', '✓ Pro activo. Probá skins.');
+      else {
+        setStatus('bad', 'No se pudo activar. Usá <strong>Verificar</strong> para ver el detalle.');
+      }
+    };
+
+    document.getElementById('deactivate').onclick = function () {
+      Auralert.deactivate();
+      setStatus('warn', 'Pro desactivado.');
+    };
+
+    document.querySelectorAll('[data-skin]').forEach(function (btn) {
+      btn.onclick = function () {
+        try {
+          Auralert.setSkin(btn.dataset.skin);
+          Auralert.modal({
+            title: 'Skin: ' + btn.dataset.skin,
+            message: 'Pro funcionando',
+            type: 'success',
+            skin: btn.dataset.skin,
+            animation: 'spring',
+            showCancel: false
+          });
+        } catch (e) {
+          setStatus('bad', e.message);
+        }
+      };
+    });
+  </script>
+</body>
+</html>

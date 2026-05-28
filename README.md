@@ -79,4 +79,4 @@ node build.js
 
 ## Licencia
 
-MIT — versión gratuita con API abierta. Roadmap Pro: skins premium (mármol, oro, animaciones avanzadas).
+MIT — versión gratuita con API abierta.

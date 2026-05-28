@@ -3,20 +3,62 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="refresh" content="0; url=demo/">
-  <title>Auralert</title>
+  <title>Auralert — Alertas JS para cualquier proyecto</title>
+  <meta name="description" content="Toasts, modales, banners y notificaciones. Un script, cero dependencias. Django, React, Vue, HTML y más.">
   <style>
-    body { font-family: system-ui, sans-serif; max-width: 560px; margin: 4rem auto; padding: 0 1rem; line-height: 1.6; }
-    a { color: #6366f1; }
-    code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 0.9em; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, sans-serif;
+      background: linear-gradient(160deg, #f8fafc 0%, #eef2ff 100%);
+      color: #0f172a;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      text-align: center;
+    }
+    h1 { font-size: 2.5rem; margin: 0 0 0.5rem; }
+    p { max-width: 520px; color: #475569; line-height: 1.6; }
+    .actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin: 2rem 0 1.5rem; }
+    a.btn {
+      display: inline-block;
+      padding: 12px 24px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 15px;
+    }
+    a.primary { background: #6366f1; color: #fff; }
+    a.secondary { background: #fff; color: #6366f1; border: 1px solid #c7d2fe; }
+    pre {
+      background: #0f172a;
+      color: #e2e8f0;
+      padding: 1rem 1.25rem;
+      border-radius: 10px;
+      text-align: left;
+      font-size: 13px;
+      overflow-x: auto;
+      max-width: 100%;
+    }
+    .note { font-size: 13px; color: #64748b; margin-top: 2rem; }
   </style>
 </head>
 <body>
   <h1>Auralert</h1>
-  <p>Redirigiendo a la <a href="demo/">demo</a>…</p>
-  <h2>CDN (usar en tus proyectos)</h2>
-  <pre><code>&lt;script src="https://ovejero92.github.io/Auralert/dist/auralert.min.js"&gt;&lt;/script&gt;</code></pre>
-  <p>CDN jsDelivr (tag <code>1.0.1</code>, no uses <code>@main</code>):</p>
-  <pre><code>&lt;script src="https://cdn.jsdelivr.net/gh/ovejero92/Auralert@1.0.1/dist/auralert.min.js"&gt;&lt;/script&gt;</code></pre>
+  <p>Librería JavaScript universal para alertas. Funciona en cualquier framework con un solo <code>&lt;script&gt;</code>.</p>
+
+  <div class="actions">
+    <a class="btn primary" href="demo/">Ver documentación y demo</a>
+    <a class="btn secondary" href="pro/">Pro</a>
+    <a class="btn secondary" href="https://github.com/ovejero92/Auralert" target="_blank" rel="noopener">GitHub</a>
+  </div>
+
+  <pre><code>&lt;script src="https://ovejero92.github.io/Auralert/dist/auralert.min.js"&gt;&lt;/script&gt;
+&lt;script&gt;Auralert.toast({ message: '¡Hola!', type: 'success' });&lt;/script&gt;</code></pre>
+
+  <p class="note">La documentación interactiva está en <strong>/demo/</strong> — instalación, integraciones y ejemplos en vivo.</p>
 </body>
 </html>

@@ -113,13 +113,6 @@
       padding: 2px 8px; border-radius: 99px;
       background: var(--accent-soft); color: var(--accent);
     }
-    .pro-box {
-      background: var(--accent-soft);
-      border-radius: 10px;
-      padding: 1rem 1.25rem;
-      margin-top: 1rem;
-      font-size: 0.9rem;
-    }
     ul.opts { margin: 0.5rem 0; padding-left: 1.25rem; color: var(--muted); font-size: 0.88rem; }
     ul.opts code { color: var(--text); }
   </style>
@@ -129,7 +122,11 @@
 
   <header class="hero">
     <h1>Auralert</h1>
-    <p>Librería JavaScript universal para alertas, toasts, modales y notificaciones. Un solo <code>&lt;script&gt;</code> — funciona en cualquier stack.</p>
+    <p>Documentación oficial y playground en vivo. Instalación, integraciones por framework y ejemplos interactivos.</p>
+    <p style="margin-top:1rem">
+      <a href="../pro/" style="display:inline-block;background:#fff;color:#6366f1;font-weight:700;padding:10px 18px;border-radius:10px;text-decoration:none;margin-right:8px">✨ Auralert Pro</a>
+      <a href="https://github.com/ovejero92/Auralert" target="_blank" rel="noopener" style="color:rgba(255,255,255,.9);font-size:14px">GitHub</a>
+    </p>
   </header>
 
   <main class="container">
@@ -324,8 +321,8 @@ res.render('pagina', { flash: 'Bienvenido' });</code></pre>
 
       <pre><code>// Modal con estilos y botones propios
 await Auralert.modal({
-  title: 'Plan Pro',
-  message: '¿Querés desbloquear temas premium?',
+  title: 'Confirmar envío',
+  message: '¿Enviar el formulario ahora?',
   type: 'info',
   width: '480px',
   modalClass: 'mi-modal',
@@ -411,21 +408,6 @@ Auralert.configure({
         <button class="demo-btn" id="aaLight">Light</button>
         <button class="demo-btn" id="aaDark">Dark</button>
         <button class="demo-btn" id="aaAuto">Auto</button>
-      </div>
-    </section>
-
-    <!-- 5. ROADMAP PRO -->
-    <section class="card" id="pro">
-      <h2>5. ¿Versión Pro en el futuro? <span class="badge">roadmap</span></h2>
-      <p>La versión gratuita cubre todo lo esencial y es muy configurable. La idea para <strong>Auralert Pro</strong> (de pago) sería:</p>
-      <ul class="opts">
-        <li>Animaciones premium (spring, morph, partículas)</li>
-        <li>Temas visuales: mármol, oro, glass, neón, etc. vía CSS (gradientes + texturas)</li>
-        <li>Packs de skins para modal/toast sin tocar tu código base</li>
-        <li>Licencia para uso comercial en muchos dominios</li>
-      </ul>
-      <div class="pro-box">
-        <strong>¿Se puede simular mármol u oro?</strong> Sí. Con CSS moderno (<code>background-image</code>, gradientes, <code>backdrop-filter</code>, sombras en capas) se logran efectos muy convincentes sin imágenes pesadas. En Pro podrías hacer <code>Auralert.setSkin('marble')</code> y aplicar variables + clases precargadas.
       </div>
     </section>
 
