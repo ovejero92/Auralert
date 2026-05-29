@@ -67,23 +67,74 @@
 
 .auralert-root[data-aa-skin="neon"] .aa-modal-title { text-shadow: 0 0 12px rgba(129, 140, 248, 0.6); }
 
-/* Aura — sombra / energía (gusanos vía AuraKit.attach) */
+/* Aura — contorno energético solo CSS (sin gusanos DOM; no rompe layout) */
+@keyframes aa-aura-ring-in {
+  0% {
+    opacity: 0;
+    box-shadow: 0 0 0 0 rgba(111, 63, 255, 0), inset 0 0 0 rgba(111, 63, 255, 0);
+  }
+  40% {
+    opacity: 1;
+    box-shadow:
+      0 0 0 1px rgba(167, 139, 250, 0.7),
+      0 0 32px rgba(111, 63, 255, 0.55),
+      0 0 64px rgba(111, 63, 255, 0.2),
+      inset 0 0 28px rgba(111, 63, 255, 0.12);
+  }
+  100% {
+    opacity: 1;
+    box-shadow:
+      0 0 0 1px rgba(111, 63, 255, 0.45),
+      0 0 22px rgba(111, 63, 255, 0.28),
+      inset 0 0 18px rgba(111, 63, 255, 0.08);
+  }
+}
+
+@keyframes aa-aura-shimmer {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.12); }
+}
+
 .auralert-root[data-aa-skin="aura"] .aa-modal,
 .auralert-root[data-aa-skin="aura"] .aa-toast,
-.auralert-root[data-aa-skin="aura"] .aa-notify,
-.auralert-root[data-aa-skin="aura"] .aa-banner {
-  background: linear-gradient(160deg, #0c0618, #06030c) !important;
+.auralert-root[data-aa-skin="aura"] .aa-notify {
+  position: relative;
+  isolation: isolate;
+  background: linear-gradient(160deg, #0c0618 0%, #080412 50%, #06030c 100%) !important;
   color: #e8deff !important;
-  border: 1px solid rgba(111, 63, 255, 0.35) !important;
-  box-shadow:
-    0 0 40px rgba(111, 63, 255, 0.12),
-    inset 0 0 40px rgba(111, 63, 255, 0.06) !important;
+  border: 1px solid rgba(111, 63, 255, 0.45) !important;
+  border-radius: 12px !important;
+}
+
+.auralert-root[data-aa-skin="aura"] .aa-banner {
+  position: relative;
+  isolation: isolate;
+  width: 100% !important;
+  max-width: none !important;
+  align-self: stretch !important;
+  flex: 1 1 100% !important;
+  display: flex !important;
+  box-sizing: border-box !important;
+  background: linear-gradient(90deg, #0c0618 0%, #120820 50%, #0c0618 100%) !important;
+  color: #e8deff !important;
+  border-bottom: 1px solid rgba(111, 63, 255, 0.45) !important;
+  animation: aa-aura-ring-in 1.4s ease-out forwards !important;
+}
+
+.auralert-root[data-aa-skin="aura"] .aa-banner-container[data-position="bottom"] .aa-banner {
+  border-bottom: none !important;
+  border-top: 1px solid rgba(111, 63, 255, 0.45) !important;
+}
+
+.auralert-root[data-aa-skin="aura"] .aa-toast-container,
+.auralert-root[data-aa-skin="aura"] .aa-notify-container,
+.auralert-root[data-aa-skin="aura"] .aa-banner-container {
   overflow: visible !important;
 }
 
 .auralert-root[data-aa-skin="aura"] .aa-modal-title,
 .auralert-root[data-aa-skin="aura"] .aa-notify-title {
-  text-shadow: 0 0 25px rgba(111, 63, 255, 0.55);
+  text-shadow: 0 0 20px rgba(111, 63, 255, 0.5);
 }
 
 .auralert-root[data-aa-skin="aura"] .aa-modal-message,
@@ -93,20 +144,76 @@
 
 .auralert-root[data-aa-skin="aura"] .aa-modal-icon,
 .auralert-root[data-aa-skin="aura"] .aa-toast-icon,
-.auralert-root[data-aa-skin="aura"] .aa-notify-icon {
-  background: rgba(111, 63, 255, 0.25) !important;
+.auralert-root[data-aa-skin="aura"] .aa-notify-icon,
+.auralert-root[data-aa-skin="aura"] .aa-banner-icon {
+  background: rgba(111, 63, 255, 0.28) !important;
   color: #d0b0ff !important;
-  box-shadow: 0 0 18px rgba(111, 63, 255, 0.45);
+  box-shadow: 0 0 16px rgba(111, 63, 255, 0.4);
 }
 
 .auralert-root[data-aa-skin="aura"] .aa-btn-primary {
   background: linear-gradient(135deg, #9060ff, #6f3fff) !important;
   color: #f5f0ff !important;
-  box-shadow: 0 0 24px rgba(111, 63, 255, 0.35);
+  box-shadow: 0 0 20px rgba(111, 63, 255, 0.35);
 }
 
-.aa-modal-overlay .aa-aura-component {
-  overflow: visible !important;
+/* Modal: contorno en la caja (no en el overlay) */
+.auralert-root[data-aa-skin="aura"] .aa-modal-overlay .aa-modal {
+  animation: aa-aura-ring-in 1.2s ease-out forwards, aa-modal-in 0.3s cubic-bezier(0.34, 1.4, 0.64, 1) forwards !important;
+}
+
+.auralert-root[data-aa-skin="aura"].aa-pro-anim-spring .aa-modal-overlay .aa-modal {
+  animation: aa-aura-ring-in 1.2s ease-out forwards, aa-pro-modal-spring 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) forwards !important;
+}
+
+.auralert-root[data-aa-skin="aura"].aa-pro-anim-glow .aa-modal-overlay .aa-modal {
+  animation: aa-aura-ring-in 1.2s ease-out forwards, aa-pro-modal-glow 0.4s ease forwards !important;
+}
+
+.auralert-root[data-aa-skin="aura"].aa-pro-anim-warp .aa-modal-overlay .aa-modal {
+  animation: aa-aura-ring-in 1.2s ease-out forwards, aa-pro-modal-warp 0.5s cubic-bezier(0.2, 1.2, 0.2, 1) forwards !important;
+}
+
+.auralert-root[data-aa-skin="aura"].aa-pro-anim-electric .aa-modal-overlay .aa-modal {
+  animation: aa-aura-ring-in 1.2s ease-out forwards, aa-pro-modal-electric 0.55s ease forwards !important;
+}
+
+.auralert-root[data-aa-skin="aura"].aa-pro-anim-float .aa-modal-overlay .aa-modal {
+  animation: aa-aura-ring-in 1.2s ease-out forwards, aa-pro-modal-float 0.55s ease forwards !important;
+}
+
+/* Toast: aura + entrada nativa */
+.auralert-root[data-aa-skin="aura"] .aa-toast.aa-enter-top-right,
+.auralert-root[data-aa-skin="aura"] .aa-toast.aa-enter-bottom-right,
+.auralert-root[data-aa-skin="aura"] .aa-toast.aa-enter-top-left,
+.auralert-root[data-aa-skin="aura"] .aa-toast.aa-enter-bottom-left {
+  animation: aa-aura-ring-in 1.2s ease-out forwards, aa-toast-in-right 0.35s ease forwards !important;
+}
+
+.auralert-root[data-aa-skin="aura"] .aa-toast.aa-enter-top-left,
+.auralert-root[data-aa-skin="aura"] .aa-toast.aa-enter-bottom-left {
+  animation: aa-aura-ring-in 1.2s ease-out forwards, aa-toast-in-left 0.35s ease forwards !important;
+}
+
+.auralert-root[data-aa-skin="aura"] .aa-notify.aa-enter {
+  animation: aa-aura-ring-in 1.2s ease-out forwards, aa-notify-in 0.45s cubic-bezier(0.34, 1.35, 0.64, 1) forwards !important;
+}
+
+.auralert-root[data-aa-skin="aura"] .aa-banner.aa-enter-top {
+  animation: aa-aura-ring-in 1.2s ease-out forwards, aa-banner-in-top 0.35s ease forwards !important;
+}
+
+.auralert-root[data-aa-skin="aura"] .aa-banner.aa-enter-bottom {
+  animation: aa-aura-ring-in 1.2s ease-out forwards, aa-banner-in-bottom 0.35s ease forwards !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .auralert-root[data-aa-skin="aura"] .aa-modal,
+  .auralert-root[data-aa-skin="aura"] .aa-toast,
+  .auralert-root[data-aa-skin="aura"] .aa-notify,
+  .auralert-root[data-aa-skin="aura"] .aa-banner {
+    animation: none !important;
+  }
 }
 
 /* Pro animations */

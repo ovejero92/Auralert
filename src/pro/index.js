@@ -6,12 +6,6 @@
 
   var PRO_STYLES = /* AURALERT_PRO_STYLES */ '';
   var SKINS = ['glass', 'marble', 'gold', 'neon', 'aura'];
-  var AURA_COMPONENT_CFG = {
-    cardSpawnUp: 10,
-    cardWormsPer100px: 2.4,
-    scale: [0.55, 0.9],
-    len: [0.42, 0.72],
-  };
   var ANIMATIONS = ['spring', 'glow', 'warp', 'electric', 'float', 'none'];
 
   var LICENSE_KEY = 'auralert_pro_license';
@@ -183,26 +177,62 @@
     return o;
   }
 
+  var AURA_ALERT_CFG = {
+    cardSpawnUp: 14,
+    cardWormsPer100px: 2.1,
+    finite: false,
+  };
+
   function usesAuraSkin(opts) {
     return currentSkin === 'aura' || (opts && opts.skin === 'aura');
   }
 
   function bindAuraToSurface(el, opts) {
-    if (!usesAuraSkin(opts) || !el || !global.AuraKit) return;
-    setTimeout(function () {
-      if (el.isConnected) global.AuraKit.attach(el, AURA_COMPONENT_CFG);
-    }, 40);
+    if (!usesAuraSkin(opts) || !el || !global.AuraKit) return null;
+    var ctrl = null;
+    function tryAttach() {
+      if (!el.isConnected) return;
+      ctrl = global.AuraKit.attach(el, AURA_ALERT_CFG);
+    }
+    requestAnimationFrame(function () {
+      requestAnimationFrame(tryAttach);
+    });
+    return {
+      destroy: function () {
+        if (ctrl && ctrl.destroy) ctrl.destroy();
+      },
+    };
   }
 
-  function bindAuraToLatestModal() {
-    if (!usesAuraSkin() || !global.AuraKit) return;
-    setTimeout(function () {
-      var overlays = document.querySelectorAll('.aa-modal-overlay:not(.aa-closing)');
-      var overlay = overlays[overlays.length - 1];
-      if (!overlay) return;
-      var box = overlay.querySelector('.aa-modal');
-      if (box) global.AuraKit.attach(box, AURA_COMPONENT_CFG);
-    }, 50);
+  function hookAuraDismiss(result, opts) {
+    if (!result || !result.dismiss || !usesAuraSkin(opts)) return;
+    var auraCtrl = bindAuraToSurface(result.element, opts);
+    var orig = result.dismiss;
+    result.dismiss = function () {
+      if (auraCtrl && auraCtrl.destroy) auraCtrl.destroy();
+      return orig();
+    };
+  }
+
+  function bindAuraToLatestModal(opts) {
+    if (!usesAuraSkin(opts) || !global.AuraKit) return;
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        var overlays = document.querySelectorAll('.aa-modal-overlay:not(.aa-closing)');
+        var overlay = overlays[overlays.length - 1];
+        if (!overlay) return;
+        var box = overlay.querySelector('.aa-modal');
+        if (!box) return;
+        var ctrl = global.AuraKit.attach(box, AURA_ALERT_CFG);
+        var obs = new MutationObserver(function () {
+          if (overlay.classList.contains('aa-closing') && ctrl) {
+            ctrl.destroy();
+            obs.disconnect();
+          }
+        });
+        obs.observe(overlay, { attributes: true, attributeFilter: ['class'] });
+      });
+    });
   }
 
   function wrapMethod(name, fn) {
@@ -212,12 +242,12 @@
       if (opts.skin) setSkin(opts.skin);
       if (opts.animation) setAnimation(opts.animation);
       var result = fn(opts);
+      if (usesAuraSkin(opts)) {
+        if (name === 'modal') bindAuraToLatestModal(opts);
+        else if (result && result.element) hookAuraDismiss(result, opts);
+      }
       if (currentSkin) {
         setTimeout(function () { applySkinToRoots(currentSkin); }, 0);
-      }
-      if (usesAuraSkin(opts)) {
-        if (name === 'modal') bindAuraToLatestModal();
-        else if (result && result.element) bindAuraToSurface(result.element, opts);
       }
       return result;
     };
@@ -250,7 +280,6 @@
       if (ok) {
         persistLicense(licenseKey);
         injectProStyles();
-        if (global.AuraKit && global.AuraKit.ensureTpl) global.AuraKit.ensureTpl();
         installWrappers();
         markProRoots();
         applySkinToRoots(currentSkin);

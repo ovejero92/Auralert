@@ -25,6 +25,91 @@
   bottom: -45%;
 }
 
+/* Alertas Pro — campo alineado al contorno del toast/modal */
+.aura-field--alert {
+  top: -22px;
+  left: -22px;
+  right: -22px;
+  bottom: -22px;
+  width: auto;
+  height: auto;
+}
+
+/* Pro alertas — partículas dentro del componente (sin wrapper) */
+.aa-aura-host {
+  position: relative;
+  isolation: isolate;
+  overflow: visible !important;
+}
+
+.aa-aura-host.aa-banner {
+  width: 100% !important;
+  max-width: none !important;
+  align-self: stretch !important;
+  flex: 1 1 100% !important;
+  box-sizing: border-box !important;
+}
+
+.aa-aura-host .aura-field--alert {
+  top: -32px;
+  left: -32px;
+  right: -32px;
+  bottom: -32px;
+  width: auto;
+  height: auto;
+  z-index: 0;
+}
+
+.aa-aura-host > :not(.aura-field) {
+  position: relative;
+  z-index: 1;
+}
+
+.aa-aura-host .aura-worm {
+  --dur: calc(5.5s + 1.4s * var(--len));
+}
+
+.aa-aura-component {
+  position: relative;
+  display: inline-flex;
+  max-width: 100%;
+  vertical-align: top;
+  overflow: visible !important;
+  pointer-events: auto;
+}
+
+/* Gusanos finitos en alertas (no infinito, no traba la UI) */
+.aa-aura-component .aura-worm--finite .seg {
+  animation-iteration-count: 2;
+}
+.aa-aura-component .aura-worm--finite .ember {
+  animation-iteration-count: 2;
+}
+.aa-aura-component .aura-worm {
+  --dur: calc(4.5s + 1.2s * var(--len));
+}
+
+/* Contorno violeta siempre visible (liviano) */
+.aa-aura-component::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 1;
+  box-shadow:
+    0 0 0 1px rgba(111, 63, 255, 0.35),
+    0 0 18px rgba(111, 63, 255, 0.22),
+    inset 0 0 24px rgba(111, 63, 255, 0.06);
+  animation: aa-aura-ring 2.5s ease-out 1;
+}
+
+@keyframes aa-aura-ring {
+  0% { opacity: 0; transform: scale(0.98); }
+  25% { opacity: 1; }
+  100% { opacity: 0.85; transform: scale(1); }
+}
+
 .hero-title {
   position: relative;
   z-index: 2;
@@ -55,10 +140,7 @@
 .aa-aura-surface {
   position: relative;
   z-index: 2;
-}
-
-.aa-aura-component {
-  overflow: visible !important;
+  border-radius: inherit;
 }
 
 .aura-worm {
