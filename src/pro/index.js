@@ -5,7 +5,13 @@
   'use strict';
 
   var PRO_STYLES = /* AURALERT_PRO_STYLES */ '';
-  var SKINS = ['glass', 'marble', 'gold', 'neon'];
+  var SKINS = ['glass', 'marble', 'gold', 'neon', 'aura'];
+  var AURA_COMPONENT_CFG = {
+    cardSpawnUp: 10,
+    cardWormsPer100px: 2.4,
+    scale: [0.55, 0.9],
+    len: [0.42, 0.72],
+  };
   var ANIMATIONS = ['spring', 'glow', 'warp', 'electric', 'float', 'none'];
 
   var LICENSE_KEY = 'auralert_pro_license';
@@ -177,6 +183,28 @@
     return o;
   }
 
+  function usesAuraSkin(opts) {
+    return currentSkin === 'aura' || (opts && opts.skin === 'aura');
+  }
+
+  function bindAuraToSurface(el, opts) {
+    if (!usesAuraSkin(opts) || !el || !global.AuraKit) return;
+    setTimeout(function () {
+      if (el.isConnected) global.AuraKit.attach(el, AURA_COMPONENT_CFG);
+    }, 40);
+  }
+
+  function bindAuraToLatestModal() {
+    if (!usesAuraSkin() || !global.AuraKit) return;
+    setTimeout(function () {
+      var overlays = document.querySelectorAll('.aa-modal-overlay:not(.aa-closing)');
+      var overlay = overlays[overlays.length - 1];
+      if (!overlay) return;
+      var box = overlay.querySelector('.aa-modal');
+      if (box) global.AuraKit.attach(box, AURA_COMPONENT_CFG);
+    }, 50);
+  }
+
   function wrapMethod(name, fn) {
     return function (opts) {
       opts = opts || {};
@@ -186,6 +214,10 @@
       var result = fn(opts);
       if (currentSkin) {
         setTimeout(function () { applySkinToRoots(currentSkin); }, 0);
+      }
+      if (usesAuraSkin(opts)) {
+        if (name === 'modal') bindAuraToLatestModal();
+        else if (result && result.element) bindAuraToSurface(result.element, opts);
       }
       return result;
     };
@@ -218,6 +250,7 @@
       if (ok) {
         persistLicense(licenseKey);
         injectProStyles();
+        if (global.AuraKit && global.AuraKit.ensureTpl) global.AuraKit.ensureTpl();
         installWrappers();
         markProRoots();
         applySkinToRoots(currentSkin);

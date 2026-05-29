@@ -1,0 +1,146 @@
+/* Auralert — Aura Kit (worm energy field) */
+.aura-wrap {
+  position: relative;
+  isolation: isolate;
+}
+
+.aura-field {
+  position: absolute;
+  pointer-events: none;
+  z-index: 0;
+  overflow: visible;
+}
+
+.aura-field--title {
+  top: -35%;
+  left: -4%;
+  right: -4%;
+  bottom: 0;
+}
+
+.aura-field--card {
+  top: -45%;
+  left: -18%;
+  right: -18%;
+  bottom: -45%;
+}
+
+.hero-title {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.02em 0.06em;
+  font-size: clamp(2.8rem, 10vw, 4.6rem);
+  font-weight: 900;
+  line-height: 1;
+  margin: 0;
+}
+
+.hero-title--pro {
+  font-size: clamp(2.4rem, 8vw, 4.6rem);
+}
+
+.letter {
+  color: #f5f0ff;
+  text-shadow:
+    0 0 12px rgba(180, 140, 255, 0.95),
+    0 0 35px rgba(111, 63, 255, 0.8),
+    0 0 70px rgba(111, 63, 255, 0.45),
+    0 4px 20px rgba(0, 0, 0, 0.9);
+}
+
+.aa-aura-surface {
+  position: relative;
+  z-index: 2;
+}
+
+.aa-aura-component {
+  overflow: visible !important;
+}
+
+.aura-worm {
+  --s: 1;
+  --len: 0.7;
+  --delay: 0s;
+  --x: 50%;
+  --y: 0%;
+  --rot: 0deg;
+  --dur: calc(8s + 2s * var(--len));
+  position: absolute;
+  left: var(--x);
+  bottom: var(--y);
+  width: calc(22px * var(--s));
+  height: calc(100px * var(--len) * var(--s));
+  transform: translateX(-50%) rotate(var(--rot));
+  transform-origin: center bottom;
+}
+
+.seg {
+  --i: 0;
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: calc((14px - var(--i) * 0.8px) * var(--s));
+  height: calc((5.5px - var(--i) * 0.15px) * var(--s));
+  border-radius: 50%;
+  transform: translate(-50%, 0);
+  filter: blur(calc(1.2px * var(--s)));
+  opacity: 0;
+  animation: worm-crawl var(--dur) calc(var(--delay) - var(--i) * 0.12s) ease-in-out infinite;
+}
+
+.seg:nth-child(1)  { --i: 0;  background: radial-gradient(circle, #1a0035 30%, #6f3fff99 70%, transparent); }
+.seg:nth-child(2)  { --i: 1;  background: radial-gradient(circle, #0d0020 30%, #5a20cc99 70%, transparent); }
+.seg:nth-child(3)  { --i: 2;  background: radial-gradient(circle, #000 30%, #4a109999 70%, transparent); }
+.seg:nth-child(4)  { --i: 3;  background: radial-gradient(circle, #150030 30%, #6020e099 70%, transparent); }
+.seg:nth-child(5)  { --i: 4;  background: radial-gradient(circle, #200040 30%, #7030f099 70%, transparent); }
+.seg:nth-child(6)  { --i: 5;  background: radial-gradient(circle, #2a0055 30%, #8040ff99 70%, transparent); }
+.seg:nth-child(7)  { --i: 6;  background: radial-gradient(circle, #350066 30%, #9050ff88 70%, transparent); }
+.seg:nth-child(8)  { --i: 7;  background: radial-gradient(circle, #401080 30%, #a060ff77 70%, transparent); }
+.seg:nth-child(9)  { --i: 8;  background: radial-gradient(circle, #5020a0 30%, #b070ff66 70%, transparent); }
+.seg:nth-child(10) { --i: 9;  background: radial-gradient(circle, #6030b0 30%, #c090ff55 70%, transparent); filter: blur(calc(1.4px * var(--s))); }
+.seg:nth-child(11) { --i: 10; background: radial-gradient(circle, #8050d0 30%, #d0b0ff44 70%, transparent); filter: blur(calc(1.6px * var(--s))); }
+.seg:nth-child(12) { --i: 11; background: radial-gradient(circle, #a070ff 20%, #e0c8ff33 60%, transparent); filter: blur(calc(1.8px * var(--s))); }
+
+.ember {
+  --ei: 0;
+  --ex: 0px;
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: calc(2.5px * var(--s));
+  height: calc(2.5px * var(--s));
+  border-radius: 50%;
+  background: #d0b0ff;
+  box-shadow: 0 0 calc(5px * var(--s)) calc(2px * var(--s)) #9060ff;
+  opacity: 0;
+  animation: ember-leave var(--dur) calc(var(--delay) - var(--ei) * 1.8s) ease-out infinite;
+}
+.ember:nth-child(13) { --ei: 0; --ex: calc(-6px * var(--s)); }
+.ember:nth-child(14) { --ei: 1; --ex: calc(5px * var(--s)); }
+.ember:nth-child(15) { --ei: 2; --ex: calc(-3px * var(--s)); width: calc(2px * var(--s)); height: calc(2px * var(--s)); }
+
+@keyframes worm-crawl {
+  0%   { opacity: 0; transform: translate(-50%, 0) translateX(0); }
+  5%   { opacity: calc(0.92 - var(--i) * 0.05); }
+  15%  { transform: translate(-50%, calc(-10px * var(--len) * var(--s))) translateX(calc(5px * var(--s))); }
+  30%  { transform: translate(-50%, calc(-22px * var(--len) * var(--s))) translateX(calc(-7px * var(--s))); }
+  45%  { transform: translate(-50%, calc(-36px * var(--len) * var(--s))) translateX(calc(8px * var(--s))); }
+  60%  { transform: translate(-50%, calc(-48px * var(--len) * var(--s))) translateX(calc(-5px * var(--s))); }
+  75%  { transform: translate(-50%, calc(-58px * var(--len) * var(--s))) translateX(calc(4px * var(--s))); opacity: calc(0.65 - var(--i) * 0.04); }
+  90%  { transform: translate(-50%, calc(-66px * var(--len) * var(--s))) translateX(calc(-2px * var(--s))); opacity: calc(0.25 - var(--i) * 0.015); }
+  100% { opacity: 0; transform: translate(-50%, calc(-72px * var(--len) * var(--s))) translateX(0); }
+}
+
+@keyframes ember-leave {
+  0%, 62% { opacity: 0; transform: translate(-50%, calc(-58px * var(--len) * var(--s))) scale(0); }
+  68%     { opacity: 0.9; transform: translate(calc(-50% + var(--ex)), calc(-64px * var(--len) * var(--s))) scale(1); }
+  100%    { opacity: 0; transform: translate(calc(-50% + var(--ex) * 2), calc(-92px * var(--len) * var(--s))) scale(0.2); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .seg, .ember { animation: none !important; opacity: 0 !important; }
+}

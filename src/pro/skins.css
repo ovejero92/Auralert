@@ -67,6 +67,48 @@
 
 .auralert-root[data-aa-skin="neon"] .aa-modal-title { text-shadow: 0 0 12px rgba(129, 140, 248, 0.6); }
 
+/* Aura — sombra / energía (gusanos vía AuraKit.attach) */
+.auralert-root[data-aa-skin="aura"] .aa-modal,
+.auralert-root[data-aa-skin="aura"] .aa-toast,
+.auralert-root[data-aa-skin="aura"] .aa-notify,
+.auralert-root[data-aa-skin="aura"] .aa-banner {
+  background: linear-gradient(160deg, #0c0618, #06030c) !important;
+  color: #e8deff !important;
+  border: 1px solid rgba(111, 63, 255, 0.35) !important;
+  box-shadow:
+    0 0 40px rgba(111, 63, 255, 0.12),
+    inset 0 0 40px rgba(111, 63, 255, 0.06) !important;
+  overflow: visible !important;
+}
+
+.auralert-root[data-aa-skin="aura"] .aa-modal-title,
+.auralert-root[data-aa-skin="aura"] .aa-notify-title {
+  text-shadow: 0 0 25px rgba(111, 63, 255, 0.55);
+}
+
+.auralert-root[data-aa-skin="aura"] .aa-modal-message,
+.auralert-root[data-aa-skin="aura"] .aa-notify-message {
+  color: rgba(232, 222, 255, 0.78) !important;
+}
+
+.auralert-root[data-aa-skin="aura"] .aa-modal-icon,
+.auralert-root[data-aa-skin="aura"] .aa-toast-icon,
+.auralert-root[data-aa-skin="aura"] .aa-notify-icon {
+  background: rgba(111, 63, 255, 0.25) !important;
+  color: #d0b0ff !important;
+  box-shadow: 0 0 18px rgba(111, 63, 255, 0.45);
+}
+
+.auralert-root[data-aa-skin="aura"] .aa-btn-primary {
+  background: linear-gradient(135deg, #9060ff, #6f3fff) !important;
+  color: #f5f0ff !important;
+  box-shadow: 0 0 24px rgba(111, 63, 255, 0.35);
+}
+
+.aa-modal-overlay .aa-aura-component {
+  overflow: visible !important;
+}
+
 /* Pro animations */
 .auralert-root.aa-pro .aa-modal,
 .auralert-root.aa-pro .aa-toast,

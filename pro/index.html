@@ -6,6 +6,7 @@
   <title>Auralert Pro</title>
   <meta name="description" content="Skins premium y animaciones para Auralert. Compra automática con Mercado Pago.">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/aura/aura.css">
   <style>
     :root {
       --bg0: #050816;
@@ -47,47 +48,7 @@
       opacity: .9;
       pointer-events: none;
     }
-    h1 { margin: 0; font-size: clamp(2.25rem, 5vw, 3.15rem); font-weight: 750; letter-spacing: -.02em; }
-    .logo {
-      position: relative;
-      display: inline-block;
-      padding: 0;
-      margin: 0;
-      line-height: 1;
-    }
-    .logo svg { display: block; width: min(620px, 92vw); height: auto; margin: 0 auto; }
-    .logo canvas {
-      position: absolute;
-      inset: -40% -10%;
-      width: 120%;
-      height: 180%;
-      z-index: -2;
-      pointer-events: none;
-      opacity: .55;
-      mix-blend-mode: screen;
-      filter: blur(.4px);
-    }
-    .logo text { font-family: Inter, system-ui, sans-serif; font-weight: 800; letter-spacing: -0.02em; }
-    .logo::before {
-      content: "";
-      position: absolute;
-      inset: -55% -20%;
-      background:
-        radial-gradient(closest-side, rgba(59,130,246,.18), transparent 70%),
-        radial-gradient(closest-side, rgba(147,197,253,.12), transparent 72%),
-        radial-gradient(closest-side, rgba(99,102,241,.12), transparent 75%);
-      filter: blur(22px);
-      opacity: .85;
-      z-index: -3;
-      pointer-events: none;
-    }
-    @media (prefers-reduced-motion: no-preference) {
-      .logo::before { animation: auraHaze 3.6s ease-in-out infinite; }
-      @keyframes auraHaze {
-        0%, 100% { transform: scale(1); opacity: .9; }
-        50% { transform: scale(1.06); opacity: 1; }
-      }
-    }
+    .title-block { margin: 0 auto; max-width: 100%; }
     .sub { max-width: 720px; margin: .85rem auto 0; color: var(--muted); line-height: 1.65; font-size: 1.03rem; }
     .wrap { max-width: 1080px; margin: 0 auto; padding: 0 1.25rem 4rem; }
     .layout { display: grid; gap: 18px; margin-top: 1.25rem; }
@@ -188,6 +149,93 @@
     }
     .skin.gold { border-color: rgba(245,158,11,.35); }
     .skin.neon { border-color: rgba(167,139,250,.35); }
+    .skin.aura { border-color: rgba(111,63,255,.45); color: #e8deff; }
+
+    .section-title {
+      margin: 2.25rem 0 .85rem;
+      font-size: 1.05rem;
+      letter-spacing: -0.01em;
+      color: rgba(226,232,240,.92);
+    }
+
+    .pill-grid {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: 1fr;
+    }
+    @media (min-width: 820px) { .pill-grid { grid-template-columns: repeat(3, 1fr); } }
+    .pill {
+      padding: 14px 14px 13px;
+      border-radius: 16px;
+      border: 1px solid rgba(148,163,184,.16);
+      background: rgba(2,6,23,.18);
+      box-shadow: 0 18px 55px rgba(2,6,23,.45);
+    }
+    .pill .k { font-size: 13px; color: rgba(226,232,240,.78); line-height: 1.55; margin: 0; }
+    .pill .m {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .pill .metric { font-size: 20px; font-weight: 850; letter-spacing: -0.02em; }
+    .pill .tag {
+      font-size: 11px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: rgba(199,210,254,.9);
+      border: 1px solid rgba(99,102,241,.35);
+      background: rgba(2,6,23,.20);
+      padding: 6px 10px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    .faq {
+      margin-top: .75rem;
+      display: grid;
+      gap: 10px;
+    }
+    details.faq-item {
+      border: 1px solid rgba(148,163,184,.16);
+      background: rgba(2,6,23,.18);
+      border-radius: 16px;
+      padding: 12px 14px;
+      box-shadow: 0 18px 55px rgba(2,6,23,.45);
+    }
+    details.faq-item > summary {
+      list-style: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      font-weight: 750;
+      font-size: 14px;
+      color: rgba(226,232,240,.92);
+    }
+    details.faq-item > summary::-webkit-details-marker { display: none; }
+    .faq-icon {
+      flex-shrink: 0;
+      width: 26px;
+      height: 26px;
+      display: grid;
+      place-items: center;
+      border-radius: 999px;
+      border: 1px solid rgba(99,102,241,.35);
+      color: rgba(199,210,254,.9);
+      background: rgba(2,6,23,.18);
+      transition: transform .2s ease;
+    }
+    details[open] .faq-icon { transform: rotate(45deg); }
+    .faq-body {
+      margin-top: 10px;
+      color: rgba(226,232,240,.72);
+      font-size: 13px;
+      line-height: 1.65;
+    }
+    .faq-body code { background: rgba(255,255,255,.08); padding: 2px 6px; border-radius: 6px; }
   </style>
   <!-- En producción: copiá api-config.example.js → api-config.js con tu API -->
   <script src="api-config.example.js"></script>
@@ -195,50 +243,12 @@
 <body>
   <header>
     <span class="badge">Licencia perpetua</span>
-    <h1 class="logo" aria-label="Auralert Pro">
-      <canvas id="auraParticlesPro" aria-hidden="true"></canvas>
-      <svg viewBox="0 0 980 200" role="img" aria-hidden="true">
-        <defs>
-          <filter id="aur-field" x="-35%" y="-80%" width="170%" height="260%" color-interpolation-filters="sRGB">
-            <feTurbulence type="fractalNoise" baseFrequency="0.012" numOctaves="2" seed="9" result="noise">
-              <animate attributeName="baseFrequency" dur="2.2s" values="0.010;0.017;0.011" repeatCount="indefinite" />
-            </feTurbulence>
-            <feDisplacementMap in="SourceGraphic" in2="noise" scale="18" xChannelSelector="R" yChannelSelector="G" result="displaced"/>
-            <feGaussianBlur in="displaced" stdDeviation="3.2" result="blur1"/>
-            <feColorMatrix in="blur1" type="matrix" values="
-              0 0 0 0 0.10
-              0 0 0 0 0.45
-              0 0 0 0 1.00
-              0 0 0 0.92 0" result="blue1"/>
-            <feGaussianBlur in="blue1" stdDeviation="7" result="glow"/>
-            <feMerge>
-              <feMergeNode in="glow"/>
-              <feMergeNode in="blue1"/>
-              <feMergeNode in="SourceGraphic"/>
-            </feMerge>
-          </filter>
-          <filter id="aur-inner" x="-20%" y="-40%" width="140%" height="180%" color-interpolation-filters="sRGB">
-            <feGaussianBlur stdDeviation="1.2" result="b"/>
-            <feColorMatrix in="b" type="matrix" values="
-              0 0 0 0 0.30
-              0 0 0 0 0.60
-              0 0 0 0 1.00
-              0 0 0 0.9 0" result="c"/>
-            <feMerge>
-              <feMergeNode in="c"/>
-              <feMergeNode in="SourceGraphic"/>
-            </feMerge>
-          </filter>
-        </defs>
-
-        <g filter="url(#aur-field)" opacity="0.95">
-          <text x="50%" y="126" text-anchor="middle" font-size="92" fill="#dbeafe">Auralert Pro</text>
-        </g>
-        <g filter="url(#aur-inner)">
-          <text x="50%" y="126" text-anchor="middle" font-size="92" fill="#f8fafc">Auralert Pro</text>
-        </g>
-      </svg>
-    </h1>
+    <div class="title-block">
+      <div class="aura-wrap" id="auralert-pro-title-wrap">
+        <h1 class="hero-title hero-title--pro" id="hero-auralert-pro" aria-label="Auralert Pro"></h1>
+        <div class="aura-field aura-field--title" aria-hidden="true"></div>
+      </div>
+    </div>
     <p class="sub">Skins premium, animaciones avanzadas y portal exclusivo. Probá gratis en la demo; si te convence, comprá en minutos — licencia y archivo al instante por email.</p>
     <nav class="nav">
       <a href="../demo/">Documentación gratis</a>
@@ -253,7 +263,7 @@
         <section class="card">
           <h2>Incluido</h2>
           <ul>
-            <li>Skins: mármol, oro, glass, neón</li>
+            <li>Skins: mármol, oro, glass, neón, <strong>aura</strong></li>
             <li>Animaciones: spring, glow, warp, electric, float</li>
             <li>Mismo API que la versión gratis + <code>setSkin</code> / <code>setAnimation</code></li>
             <li>Portal Pro privado (solo con licencia válida)</li>
@@ -268,6 +278,7 @@
             <div class="skin gold">Oro</div>
             <div class="skin">Glass</div>
             <div class="skin neon">Neón</div>
+            <div class="skin aura">Aura</div>
           </div>
           <p style="color:var(--muted);font-size:13px;margin:12px 0 0">La demo interactiva completa está en el portal, después de comprar o activar tu licencia.</p>
         </section>
@@ -298,6 +309,72 @@
 
         <div id="checkout-msg" class="msg"></div>
       </aside>
+    </div>
+
+    <h2 class="section-title">Resultados reales</h2>
+    <div class="pill-grid" aria-label="Stats y testimonios">
+      <div class="pill">
+        <div class="m">
+          <div class="metric">+3 skins</div>
+          <div class="tag">premium</div>
+        </div>
+        <p class="k">Marble, Gold, Glass y Neon. Cambiás el look sin reescribir CSS.</p>
+      </div>
+      <div class="pill">
+        <div class="m">
+          <div class="metric">+5 anims</div>
+          <div class="tag">cinema</div>
+        </div>
+        <p class="k">Spring, Glow, Warp, Electric y Float. Entrada y salida animadas.</p>
+      </div>
+      <div class="pill">
+        <div class="m">
+          <div class="metric">“se ve pro”</div>
+          <div class="tag">feedback</div>
+        </div>
+        <p class="k">Ideal para dashboards y productos: el UI se siente cuidado desde el primer alert.</p>
+      </div>
+    </div>
+
+    <h2 class="section-title">FAQ</h2>
+    <div class="faq">
+      <details class="faq-item">
+        <summary>
+          <span>¿Qué recibo después de pagar?</span>
+          <span class="faq-icon">+</span>
+        </summary>
+        <div class="faq-body">
+          Recibís un email con tu <strong>licencia</strong> y un link privado para descargar <code>auralert-pro.min.js</code>.
+          Además, accedés al <strong>portal Pro</strong> para probar skins/animaciones.
+        </div>
+      </details>
+      <details class="faq-item">
+        <summary>
+          <span>¿La licencia es por mes o única?</span>
+          <span class="faq-icon">+</span>
+        </summary>
+        <div class="faq-body">
+          Es <strong>pago único</strong> (licencia perpetua). La idea es que sea simple y sin fricción.
+        </div>
+      </details>
+      <details class="faq-item">
+        <summary>
+          <span>¿Puedo usarla en varios proyectos?</span>
+          <span class="faq-icon">+</span>
+        </summary>
+        <div class="faq-body">
+          Sí, hasta <strong>3 dominios</strong> por licencia (podés ampliar esto en el servidor si lo necesitás).
+        </div>
+      </details>
+      <details class="faq-item">
+        <summary>
+          <span>¿Qué pasa si no me llega el email?</span>
+          <span class="faq-icon">+</span>
+        </summary>
+        <div class="faq-body">
+          Revisá spam/promociones. Si no llega en 5 minutos, escribinos con el email de compra y lo resolvemos.
+        </div>
+      </details>
     </div>
   </main>
 
@@ -380,77 +457,19 @@
     };
   </script>
 
+  <script src="../assets/aura/aura-kit.js"></script>
   <script>
-    (function () {
-      if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-      var canvas = document.getElementById('auraParticlesPro');
-      if (!canvas) return;
-      var host = canvas.parentElement;
-      var ctx = canvas.getContext('2d');
-      var dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
-      var particles = [];
-      var max = 46;
-
-      function resize() {
-        var r = host.getBoundingClientRect();
-        var w = Math.max(280, r.width * 1.25);
-        var h = Math.max(200, r.height * 1.7);
-        canvas.width = Math.floor(w * dpr);
-        canvas.height = Math.floor(h * dpr);
-        canvas.style.left = (-0.125 * r.width) + 'px';
-        canvas.style.top = (-0.35 * r.height) + 'px';
-      }
-
-      function spawn() {
-        var w = canvas.width / dpr;
-        var h = canvas.height / dpr;
-        var x = w * (0.10 + Math.random() * 0.80);
-        var y = h * (0.64 + Math.random() * 0.26);
-        particles.push({
-          x: x,
-          y: y,
-          vx: (Math.random() - 0.5) * 0.13,
-          vy: -(0.55 + Math.random() * 1.15),
-          r: 0.6 + Math.random() * 2.0,
-          a: 0.22 + Math.random() * 0.46,
-          life: 0,
-          ttl: 70 + Math.random() * 100
-        });
-      }
-
-      function step() {
-        var w = canvas.width;
-        var h = canvas.height;
-        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        ctx.clearRect(0, 0, w, h);
-        ctx.globalCompositeOperation = 'lighter';
-        for (var i = particles.length - 1; i >= 0; i--) {
-          var p = particles[i];
-          p.life++;
-          p.x += p.vx;
-          p.y += p.vy;
-          var flick = 0.75 + 0.25 * Math.sin((p.life / 6) + i);
-          var alpha = p.a * flick * (1 - (p.life / p.ttl));
-          var g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 8);
-          g.addColorStop(0, 'rgba(147,197,253,' + (alpha * 1.05) + ')');
-          g.addColorStop(0.45, 'rgba(59,130,246,' + (alpha * 0.65) + ')');
-          g.addColorStop(1, 'rgba(99,102,241,0)');
-          ctx.fillStyle = g;
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.r * 8, 0, Math.PI * 2);
-          ctx.fill();
-          if (p.life > p.ttl || p.y < -20) particles.splice(i, 1);
-        }
-        ctx.globalCompositeOperation = 'source-over';
-        while (particles.length < max) spawn();
-        requestAnimationFrame(step);
-      }
-
-      resize();
-      window.addEventListener('resize', resize);
-      for (var i = 0; i < max; i++) spawn();
-      requestAnimationFrame(step);
-    })();
+    AuraKit.buildLetters(document.getElementById('hero-auralert-pro'), 'Auralert Pro');
+    function initAuraTitle() {
+      AuraKit.ensureTpl();
+      AuraKit.init({
+        wrap: '#auralert-pro-title-wrap',
+        letters: true,
+        config: { spawnUp: 18, wormsPerUnit: 6 },
+      });
+    }
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(initAuraTitle);
+    else initAuraTitle();
   </script>
 </body>
 </html>

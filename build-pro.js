@@ -70,7 +70,9 @@ function main() {
 
   const secret = readSecret();
   const freeJs = read(freePath);
-  const proCss = read(path.join(PRO_SRC, 'skins.css'));
+  const auraCss = read(path.join(ROOT, 'src', 'aura', 'aura.css'));
+  const proCss = read(path.join(PRO_SRC, 'skins.css')) + '\n' + auraCss;
+  const auraKit = read(path.join(ROOT, 'src', 'aura', 'aura-kit.js'));
   let proJs = read(path.join(PRO_SRC, 'index.js'));
 
   proJs = proJs.replace(
@@ -82,7 +84,7 @@ function main() {
     "var LICENSE_SECRET = '" + secret.replace(/\\/g, '\\\\').replace(/'/g, "\\'") + "';"
   );
 
-  const bundle = freeJs + '\n' + proJs;
+  const bundle = freeJs + '\n' + auraKit + '\n' + proJs;
 
   const outFull = path.join(DIST, 'auralert-pro.js');
   fs.writeFileSync(outFull, bundle, 'utf8');
