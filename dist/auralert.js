@@ -61,42 +61,17 @@ var AA_FORM_ICONS = {
     return 'aa-enter-top-right';
   }
 
-  function buildStack(h, options, state) {
-    var surface = document.createElement('div');
-    surface.className = 'aa-form-surface';
-
-    var tab = document.createElement('div');
-    tab.className = 'aa-form-tab';
-
-    var badge = document.createElement('span');
-    badge.className = 'aa-form-badge';
-    badge.innerHTML = iconHtml(state, options.icon);
-    tab.appendChild(badge);
-
-    var titleText = options.title || options.message || '';
-    if (titleText) {
-      var titleEl = document.createElement('span');
-      titleEl.className = 'aa-form-tab-title';
-      titleEl.textContent = titleText;
-      h.applyClasses(titleEl, options, ['titleClass']);
-      tab.appendChild(titleEl);
-    }
-
-    surface.appendChild(tab);
-
+  function appendFormContent(body, h, options) {
+    var hasDesc = false;
     var desc = options.description;
-    var hasDesc = desc !== undefined && desc !== null && desc !== '';
-    var body = document.createElement('div');
-    body.className = 'aa-form-body';
-
-    if (hasDesc) {
+    if (desc !== undefined && desc !== null && desc !== '') {
       var descEl = document.createElement('p');
       descEl.className = 'aa-form-desc';
       descEl.textContent = typeof desc === 'string' ? desc : '';
       h.applyClasses(descEl, options, ['messageClass', 'descriptionClass']);
       body.appendChild(descEl);
+      hasDesc = true;
     }
-
     if (options.html) {
       var htmlEl = document.createElement('div');
       htmlEl.className = 'aa-form-html';
@@ -104,7 +79,6 @@ var AA_FORM_ICONS = {
       body.appendChild(htmlEl);
       hasDesc = true;
     }
-
     if (options.button && options.button.title) {
       var btn = document.createElement('button');
       btn.type = 'button';
@@ -119,7 +93,6 @@ var AA_FORM_ICONS = {
       body.appendChild(btn);
       hasDesc = true;
     }
-
     if (options.buttons && options.buttons.length) {
       var actions = document.createElement('div');
       actions.className = options.actionsClass || 'aa-form-actions';
@@ -138,6 +111,71 @@ var AA_FORM_ICONS = {
       body.appendChild(actions);
       hasDesc = true;
     }
+    return hasDesc;
+  }
+
+  function buildTabRow(h, options, state) {
+    var tab = document.createElement('div');
+    tab.className = 'aa-form-tab aa-pill-tab';
+
+    var badge = document.createElement('span');
+    badge.className = 'aa-form-badge';
+    badge.innerHTML = iconHtml(state, options.icon);
+    tab.appendChild(badge);
+
+    var titleText = options.title || options.message || '';
+    if (titleText) {
+      var titleEl = document.createElement('span');
+      titleEl.className = 'aa-form-tab-title';
+      titleEl.textContent = titleText;
+      h.applyClasses(titleEl, options, ['titleClass']);
+      tab.appendChild(titleEl);
+    }
+
+    var filL = document.createElement('span');
+    filL.className = 'aa-pill-fillet aa-pill-fillet-l';
+    filL.setAttribute('aria-hidden', 'true');
+    var filR = document.createElement('span');
+    filR.className = 'aa-pill-fillet aa-pill-fillet-r';
+    filR.setAttribute('aria-hidden', 'true');
+    tab.appendChild(filL);
+    tab.appendChild(filR);
+
+    return tab;
+  }
+
+  function buildMorphPill(h, options, state, anchor) {
+    var morph = document.createElement('div');
+    morph.className = 'aa-pill-morph';
+    morph.setAttribute('data-anchor', anchor);
+
+    var tab = buildTabRow(h, options, state);
+    var panel = document.createElement('div');
+    panel.className = 'aa-pill-panel';
+    var inner = document.createElement('div');
+    inner.className = 'aa-pill-panel-inner';
+    var hasDesc = appendFormContent(inner, h, options);
+    panel.appendChild(inner);
+
+    morph.appendChild(tab);
+    morph.appendChild(panel);
+    morph._hasBody = hasDesc;
+
+    if (options.fill) morph.style.setProperty('--aa-pill-fill', options.fill);
+    if (options.roundness != null) morph.style.setProperty('--aa-pill-round', options.roundness + 'px');
+    return morph;
+  }
+
+  function buildStack(h, options, state) {
+    var surface = document.createElement('div');
+    surface.className = 'aa-form-surface';
+
+    var tab = buildTabRow(h, options, state);
+    surface.appendChild(tab);
+
+    var body = document.createElement('div');
+    body.className = 'aa-form-body';
+    var hasDesc = appendFormContent(body, h, options);
 
     surface.appendChild(body);
     surface._hasBody = hasDesc;
@@ -171,7 +209,7 @@ var AA_FORM_ICONS = {
     if (htmlEl && opts.html) htmlEl.innerHTML = opts.html;
 
     if (opts.fill) {
-      var surf = el.querySelector('.aa-form-surface');
+      var surf = el.querySelector('.aa-pill-morph, .aa-form-surface');
       if (surf) surf.style.setProperty('--aa-pill-fill', opts.fill);
     }
   }
@@ -217,10 +255,11 @@ var AA_FORM_ICONS = {
       h.applyStyles(el, options.style);
 
       var surfaceOpts = mergeOpts(options, { _dismiss: function () { dismissToast(id, options.animationDuration || 320); } });
-      var surface = buildStack(h, surfaceOpts, state);
-      el.appendChild(surface);
+      var morph = buildMorphPill(h, surfaceOpts, state, position);
+      el.setAttribute('data-pill-anchor', position);
+      el.appendChild(morph);
 
-      if (surface._hasBody) el.classList.add('aa-pill-has-body');
+      if (morph._hasBody) el.classList.add('aa-pill-has-body');
       if (expandMode === 'auto' || expandMode === true) {
         setTimeout(function () {
           if (el.isConnected) el.classList.add('aa-pill-expanded');
@@ -1099,36 +1138,157 @@ var AA_FORM_ICONS = {
 .aa-form-spin { animation: aa-form-spin 0.75s linear infinite; }
 @keyframes aa-form-spin { to { transform: rotate(360deg); } }
 
-/* ── Toast pill ── */
-.aa-toast--pill .aa-form-surface {
-  width: min(360px, calc(100vw - 32px));
-  border-radius: 999px;
-  padding: 5px 8px 5px 5px;
+/* ── Toast pill morph (tab + panel + fillets por posición) ── */
+.aa-toast--pill .aa-pill-morph {
+  --aa-pill-fill: var(--aa-bg-elevated);
+  --aa-pill-border: var(--aa-border);
+  --aa-pill-accent: var(--aa-info);
+  --aa-pill-title: var(--aa-text);
+  --aa-pill-desc: rgba(100, 116, 139, 0.92);
+  --aa-pill-round: 20px;
+  --aa-pill-fillet: 10px;
+  position: relative;
+  width: min(380px, calc(100vw - 32px));
+  filter: drop-shadow(0 14px 32px rgba(0, 0, 0, 0.2));
 }
 
-.aa-toast--pill.aa-pill-has-body .aa-form-body {
+.aa-pill-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 5px 14px 5px 5px;
+  background: var(--aa-pill-fill);
+  border: 1px solid var(--aa-pill-border);
+  border-radius: 999px;
+  color: var(--aa-pill-accent);
+  font-size: 14px;
+  font-weight: 600;
+  position: relative;
+  z-index: 3;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.aa-pill-panel {
+  background: var(--aa-pill-fill);
+  border: 1px solid var(--aa-pill-border);
+  border-radius: var(--aa-pill-round);
+  overflow: hidden;
   max-height: 0;
   opacity: 0;
-  padding: 0 10px;
-  border-top: 1px solid transparent;
+  transform: scale(0.98);
+  transition:
+    max-height 0.48s cubic-bezier(0.34, 1.35, 0.64, 1),
+    opacity 0.32s ease,
+    transform 0.42s cubic-bezier(0.34, 1.35, 0.64, 1),
+    margin 0.38s ease;
+  z-index: 1;
 }
 
-.aa-toast--pill.aa-pill-has-body:hover .aa-form-surface,
-.aa-toast--pill.aa-pill-has-body.aa-pill-expanded .aa-form-surface,
-.aa-toast--pill.aa-pill-has-body:focus-within .aa-form-surface {
-  border-radius: var(--aa-pill-round);
-  padding: 8px 10px 12px;
+.aa-pill-panel-inner {
+  padding: 0 16px;
 }
 
-.aa-toast--pill.aa-pill-has-body:hover .aa-form-body,
-.aa-toast--pill.aa-pill-has-body.aa-pill-expanded .aa-form-body,
-.aa-toast--pill.aa-pill-has-body:focus-within .aa-form-body {
-  max-height: 180px;
+.aa-pill-fillet {
+  display: none;
+  position: absolute;
+  width: var(--aa-pill-fillet);
+  height: var(--aa-pill-fillet);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Colapsado: solo la píldora del tab */
+.aa-toast--pill:not(.aa-pill-expanded):not(:hover) .aa-pill-panel,
+.aa-toast--pill:not(.aa-pill-has-body) .aa-pill-panel {
+  display: none;
+  margin: 0 !important;
+}
+
+.aa-toast--pill:not(.aa-pill-expanded):not(:hover) .aa-pill-tab,
+.aa-toast--pill:not(.aa-pill-has-body) .aa-pill-tab {
+  position: static;
+  transform: none !important;
+}
+
+/* Expandido */
+.aa-toast--pill.aa-pill-has-body:hover .aa-pill-panel,
+.aa-toast--pill.aa-pill-has-body.aa-pill-expanded .aa-pill-panel,
+.aa-toast--pill.aa-pill-has-body:focus-within .aa-pill-panel {
+  max-height: 220px;
   opacity: 1;
-  padding: 10px 4px 2px;
-  margin-top: 4px;
-  border-top-color: color-mix(in srgb, var(--aa-border) 70%, transparent);
+  transform: scale(1);
 }
+
+.aa-toast--pill.aa-pill-has-body:hover .aa-pill-panel-inner,
+.aa-toast--pill.aa-pill-has-body.aa-pill-expanded .aa-pill-panel-inner,
+.aa-toast--pill.aa-pill-has-body:focus-within .aa-pill-panel-inner {
+  padding: 14px 16px 16px;
+}
+
+.aa-toast--pill.aa-pill-has-body:hover .aa-pill-fillet,
+.aa-toast--pill.aa-pill-has-body.aa-pill-expanded .aa-pill-fillet,
+.aa-toast--pill.aa-pill-has-body:focus-within .aa-pill-fillet {
+  display: block;
+}
+
+/* ── Anclas superiores: tab arriba del panel ── */
+.aa-pill-morph[data-anchor^="top"] .aa-pill-tab {
+  position: absolute;
+  transform: translateY(-50%);
+}
+
+.aa-pill-morph[data-anchor="top-left"] .aa-pill-tab { top: 0; left: 14px; }
+.aa-pill-morph[data-anchor="top-center"] .aa-pill-tab { top: 0; left: 50%; transform: translate(-50%, -50%); }
+.aa-pill-morph[data-anchor="top-right"] .aa-pill-tab { top: 0; right: 14px; }
+
+.aa-pill-morph[data-anchor^="top"] .aa-pill-panel {
+  margin-top: 20px;
+}
+
+.aa-pill-morph[data-anchor^="top"] .aa-pill-fillet-l {
+  bottom: 0;
+  left: calc(-1 * var(--aa-pill-fillet));
+  border-bottom-right-radius: var(--aa-pill-fillet);
+  box-shadow: calc(var(--aa-pill-fillet) / 2) 0 0 0 var(--aa-pill-fill);
+}
+
+.aa-pill-morph[data-anchor^="top"] .aa-pill-fillet-r {
+  bottom: 0;
+  right: calc(-1 * var(--aa-pill-fillet));
+  border-bottom-left-radius: var(--aa-pill-fillet);
+  box-shadow: calc(var(--aa-pill-fillet) / -2) 0 0 0 var(--aa-pill-fill);
+}
+
+/* ── Anclas inferiores: tab abajo del panel ── */
+.aa-pill-morph[data-anchor^="bottom"] .aa-pill-tab {
+  position: absolute;
+  transform: translateY(50%);
+}
+
+.aa-pill-morph[data-anchor="bottom-left"] .aa-pill-tab { bottom: 0; left: 14px; }
+.aa-pill-morph[data-anchor="bottom-center"] .aa-pill-tab { bottom: 0; left: 50%; transform: translate(-50%, 50%); }
+.aa-pill-morph[data-anchor="bottom-right"] .aa-pill-tab { bottom: 0; right: 14px; }
+
+.aa-pill-morph[data-anchor^="bottom"] .aa-pill-panel {
+  margin-bottom: 20px;
+}
+
+.aa-pill-morph[data-anchor^="bottom"] .aa-pill-fillet-l {
+  top: 0;
+  left: calc(-1 * var(--aa-pill-fillet));
+  border-top-right-radius: var(--aa-pill-fillet);
+  box-shadow: calc(var(--aa-pill-fillet) / 2) 0 0 0 var(--aa-pill-fill);
+}
+
+.aa-pill-morph[data-anchor^="bottom"] .aa-pill-fillet-r {
+  top: 0;
+  right: calc(-1 * var(--aa-pill-fillet));
+  border-top-left-radius: var(--aa-pill-fillet);
+  box-shadow: calc(var(--aa-pill-fillet) / -2) 0 0 0 var(--aa-pill-fill);
+}
+
+.aa-form-surface .aa-pill-fillet { display: none !important; }
 
 .aa-toast--pill.aa-pill-enter {
   animation: aa-pill-in 0.55s cubic-bezier(0.34, 1.45, 0.64, 1) forwards;
@@ -1167,8 +1327,13 @@ var AA_FORM_ICONS = {
   text-align: center;
 }
 
-.aa-banner--ribbon .aa-form-tab {
-  margin-bottom: 2px;
+.aa-banner--ribbon .aa-form-tab.aa-pill-tab {
+  position: static;
+  transform: none !important;
+  box-shadow: none;
+  border: none;
+  background: transparent;
+  padding: 0;
 }
 
 .aa-banner--ribbon .aa-form-body {

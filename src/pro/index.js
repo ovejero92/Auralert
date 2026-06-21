@@ -206,7 +206,7 @@
 
   function formAuraTarget(el) {
     if (!el) return el;
-    var stack = el.querySelector('.aa-form-surface');
+    var stack = el.querySelector('.aa-pill-morph, .aa-form-surface');
     return stack || el;
   }
 

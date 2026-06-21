@@ -1,4 +1,4 @@
-/* Formas alternativas + Pro skins — textura en .aa-form-surface (superficie única) */
+/* Formas alternativas + Pro skins */
 
 .auralert-root.aa-pro[data-aa-skin] .aa-toast.aa-toast--pill,
 .auralert-root.aa-pro[data-aa-skin] .aa-banner.aa-banner--ribbon,
@@ -20,95 +20,142 @@
   content: none !important;
 }
 
+/* Superficies morph (toast pill) + ribbon/modal */
+.auralert-root.aa-pro[data-aa-skin] .aa-pill-tab,
+.auralert-root.aa-pro[data-aa-skin] .aa-pill-panel,
 .auralert-root.aa-pro[data-aa-skin] .aa-form-surface {
   position: relative;
   isolation: isolate;
+}
+
+.auralert-root.aa-pro[data-aa-skin] .aa-pill-panel {
   overflow: hidden;
 }
 
+.auralert-root.aa-pro[data-aa-skin] .aa-pill-panel-inner,
+.auralert-root.aa-pro[data-aa-skin] .aa-form-tab,
+.auralert-root.aa-pro[data-aa-skin] .aa-form-body {
+  position: relative;
+  z-index: 1;
+}
+
 /* ── Mármol claro ── */
+.auralert-root.aa-pro[data-aa-skin="marble"] .aa-pill-tab,
+.auralert-root.aa-pro[data-aa-skin="marble"] .aa-pill-panel,
 .auralert-root.aa-pro[data-aa-skin="marble"] .aa-form-surface {
   --aa-marble-surface:
     linear-gradient(124deg, transparent 36%, rgba(38, 36, 33, 0.2) 36.12%, rgba(38, 36, 33, 0.05) 36.45%, transparent 36.7%),
     linear-gradient(158deg, transparent 22%, rgba(196, 158, 98, 0.32) 22.1%, rgba(212, 178, 128, 0.14) 22.45%, transparent 22.75%),
     radial-gradient(ellipse 130% 95% at 8% 12%, rgba(255, 252, 247, 0.98) 0%, transparent 48%),
     linear-gradient(152deg, #fdfbf6 0%, #f9f4ec 28%, #faf6ef 52%, #f3ebe0 78%, #f7f1e8 100%);
+  --aa-pill-fill: #faf6ef;
   background: var(--aa-marble-surface) !important;
   background-color: #faf6ef !important;
   border: 1px solid rgba(188, 168, 142, 0.65) !important;
-  box-shadow: 0 16px 40px rgba(44, 40, 36, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.92) !important;
+  box-shadow: 0 14px 36px rgba(44, 40, 36, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.92) !important;
   --aa-pill-title: #1f1b17;
   --aa-pill-desc: rgba(44, 40, 36, 0.82);
 }
 
 /* ── Mármol negro ── */
+.auralert-root.aa-pro[data-aa-skin="marble-dark"] .aa-pill-tab,
+.auralert-root.aa-pro[data-aa-skin="marble-dark"] .aa-pill-panel,
 .auralert-root.aa-pro[data-aa-skin="marble-dark"] .aa-form-surface {
   --aa-marble-surface:
     linear-gradient(132deg, transparent 31%, rgba(255, 215, 120, 0.42) 31.1%, rgba(212, 175, 55, 0.18) 31.45%, transparent 31.75%),
     linear-gradient(88deg, transparent 72%, rgba(255, 180, 60, 0.35) 72.06%, rgba(255, 215, 0, 0.15) 72.32%, transparent 72.55%),
     radial-gradient(ellipse 120% 90% at 15% 20%, rgba(30, 28, 26, 0.9) 0%, transparent 50%),
     linear-gradient(155deg, #141210 0%, #0a0908 35%, #111010 65%, #060606 100%);
+  --aa-pill-fill: #0a0908;
   background: var(--aa-marble-surface) !important;
   background-color: #0a0908 !important;
   border: 1px solid rgba(212, 175, 55, 0.45) !important;
-  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 228, 160, 0.12) !important;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.48), inset 0 1px 0 rgba(255, 228, 160, 0.12) !important;
   --aa-pill-title: #fff8e8;
   --aa-pill-desc: rgba(245, 237, 216, 0.82);
   --aa-pill-accent: #ffd700;
 }
 
 /* ── Carrara ── */
+.auralert-root.aa-pro[data-aa-skin="marble-cool"] .aa-pill-tab,
+.auralert-root.aa-pro[data-aa-skin="marble-cool"] .aa-pill-panel,
 .auralert-root.aa-pro[data-aa-skin="marble-cool"] .aa-form-surface {
   --aa-marble-surface:
     linear-gradient(122deg, transparent 34%, rgba(48, 46, 44, 0.22) 34.1%, rgba(48, 46, 44, 0.06) 34.42%, transparent 34.68%),
     linear-gradient(68deg, transparent 63%, rgba(38, 36, 34, 0.18) 63.08%, transparent 63.62%),
     radial-gradient(ellipse 125% 90% at 10% 10%, rgba(255, 255, 255, 0.98) 0%, transparent 46%),
     linear-gradient(148deg, #fdfdfd 0%, #f8f8f7 30%, #fafafa 55%, #f0f0ee 100%);
+  --aa-pill-fill: #fafafa;
   background: var(--aa-marble-surface) !important;
   background-color: #fafafa !important;
   border: 1px solid rgba(180, 180, 178, 0.55) !important;
-  box-shadow: 0 16px 40px rgba(40, 40, 38, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
+  box-shadow: 0 14px 36px rgba(40, 40, 38, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
   --aa-pill-title: #1a1a18;
   --aa-pill-desc: rgba(42, 42, 40, 0.82);
 }
 
-/* ── Glass ── */
+/* ── Glass (mismo tratamiento que toast clásico) ── */
+.auralert-root.aa-pro[data-aa-skin="glass"] .aa-pill-tab,
+.auralert-root.aa-pro[data-aa-skin="glass"] .aa-pill-panel,
 .auralert-root.aa-pro[data-aa-skin="glass"] .aa-form-surface {
-  background: rgba(255, 255, 255, 0.14) !important;
-  backdrop-filter: blur(20px) saturate(1.65);
-  -webkit-backdrop-filter: blur(20px) saturate(1.65);
+  --aa-glass-surface:
+    repeating-radial-gradient(circle at 30% 24%, rgba(255, 255, 255, 0.14) 0 0.55px, transparent 0.55px 2.6px),
+    repeating-radial-gradient(circle at 70% 66%, rgba(255, 255, 255, 0.1) 0 0.45px, transparent 0.45px 2.2px),
+    repeating-linear-gradient(118deg, transparent 0 5px, rgba(255, 255, 255, 0.06) 5px 6px, transparent 6px 13px),
+    radial-gradient(ellipse 95% 85% at 50% 42%, rgba(255, 255, 255, 0.32) 0%, rgba(255, 255, 255, 0.1) 52%, transparent 78%),
+    linear-gradient(148deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.07) 42%, rgba(255, 255, 255, 0.14) 100%);
+  --aa-pill-fill: rgba(255, 255, 255, 0.12);
+  background: var(--aa-glass-surface) !important;
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  backdrop-filter: blur(22px) saturate(1.75) brightness(1.06);
+  -webkit-backdrop-filter: blur(22px) saturate(1.75) brightness(1.06);
   border: 1px solid rgba(255, 255, 255, 0.48) !important;
-  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.28), inset 0 2px 0 rgba(255, 255, 255, 0.45) !important;
+  box-shadow:
+    0 20px 48px rgba(0, 0, 0, 0.28),
+    inset 0 2px 0 rgba(255, 255, 255, 0.45) !important;
   --aa-pill-title: #0f172a;
-  --aa-pill-desc: #475569;
+  --aa-pill-desc: #1e293b;
 }
+
+.auralert-root.aa-pro[data-aa-skin="glass"] .aa-pill-panel::before,
 .auralert-root.aa-pro[data-aa-skin="glass"] .aa-form-surface::before {
   content: "";
   position: absolute;
-  inset: -15% -25%;
+  inset: 0;
   border-radius: inherit;
   pointer-events: none;
   z-index: 0;
-  background: linear-gradient(128deg, transparent 36%, rgba(255, 255, 255, 0.45) 44%, transparent 57%);
-  opacity: 0.7;
+  background: linear-gradient(128deg, transparent 38%, rgba(255, 255, 255, 0.35) 46%, transparent 54%);
+  opacity: 0.55;
 }
-.auralert-root.aa-pro[data-aa-skin="glass"] .aa-form-desc,
+
 .auralert-root.aa-pro[data-aa-skin="glass"] .aa-form-tab-title {
-  text-shadow: 0 0 12px rgba(255, 255, 255, 0.85);
+  text-shadow: none !important;
+}
+
+.auralert-root.aa-pro[data-aa-skin="glass"] .aa-form-desc {
+  color: #1e293b !important;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.65);
 }
 
 /* ── Oro ── */
+.auralert-root.aa-pro[data-aa-skin="gold"] .aa-pill-tab,
+.auralert-root.aa-pro[data-aa-skin="gold"] .aa-pill-panel,
 .auralert-root.aa-pro[data-aa-skin="gold"] .aa-form-surface {
+  --aa-pill-fill: #ffd700;
   background: linear-gradient(152deg, #a67c00 0%, #ffd700 35%, #fff5b7 50%, #daa520 100%) !important;
   border: 1px solid rgba(139, 90, 20, 0.65) !important;
-  box-shadow: 0 16px 40px rgba(60, 35, 5, 0.35) !important;
+  box-shadow: 0 14px 36px rgba(60, 35, 5, 0.32) !important;
   --aa-pill-title: #1a0f06;
   --aa-pill-desc: rgba(42, 24, 8, 0.88);
   --aa-pill-accent: #5d3a00;
 }
 
 /* ── Neon ── */
+.auralert-root.aa-pro[data-aa-skin="neon"] .aa-pill-tab,
+.auralert-root.aa-pro[data-aa-skin="neon"] .aa-pill-panel,
 .auralert-root.aa-pro[data-aa-skin="neon"] .aa-form-surface {
+  --aa-pill-fill: #06060e;
   background: #06060e !important;
   border: 2px solid rgba(0, 245, 255, 0.45) !important;
   box-shadow: 0 0 20px rgba(0, 245, 255, 0.35), 0 0 40px rgba(129, 140, 248, 0.2) !important;
@@ -118,7 +165,10 @@
 }
 
 /* ── Aura ── */
+.auralert-root.aa-pro[data-aa-skin="aura"] .aa-pill-tab,
+.auralert-root.aa-pro[data-aa-skin="aura"] .aa-pill-panel,
 .auralert-root.aa-pro[data-aa-skin="aura"] .aa-form-surface {
+  --aa-pill-fill: #0c0618;
   background: linear-gradient(160deg, #0c0618, #06030c) !important;
   border: 1px solid rgba(111, 63, 255, 0.45) !important;
   box-shadow: 0 0 28px rgba(111, 63, 255, 0.35) !important;

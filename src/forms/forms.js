@@ -47,42 +47,17 @@
     return 'aa-enter-top-right';
   }
 
-  function buildStack(h, options, state) {
-    var surface = document.createElement('div');
-    surface.className = 'aa-form-surface';
-
-    var tab = document.createElement('div');
-    tab.className = 'aa-form-tab';
-
-    var badge = document.createElement('span');
-    badge.className = 'aa-form-badge';
-    badge.innerHTML = iconHtml(state, options.icon);
-    tab.appendChild(badge);
-
-    var titleText = options.title || options.message || '';
-    if (titleText) {
-      var titleEl = document.createElement('span');
-      titleEl.className = 'aa-form-tab-title';
-      titleEl.textContent = titleText;
-      h.applyClasses(titleEl, options, ['titleClass']);
-      tab.appendChild(titleEl);
-    }
-
-    surface.appendChild(tab);
-
+  function appendFormContent(body, h, options) {
+    var hasDesc = false;
     var desc = options.description;
-    var hasDesc = desc !== undefined && desc !== null && desc !== '';
-    var body = document.createElement('div');
-    body.className = 'aa-form-body';
-
-    if (hasDesc) {
+    if (desc !== undefined && desc !== null && desc !== '') {
       var descEl = document.createElement('p');
       descEl.className = 'aa-form-desc';
       descEl.textContent = typeof desc === 'string' ? desc : '';
       h.applyClasses(descEl, options, ['messageClass', 'descriptionClass']);
       body.appendChild(descEl);
+      hasDesc = true;
     }
-
     if (options.html) {
       var htmlEl = document.createElement('div');
       htmlEl.className = 'aa-form-html';
@@ -90,7 +65,6 @@
       body.appendChild(htmlEl);
       hasDesc = true;
     }
-
     if (options.button && options.button.title) {
       var btn = document.createElement('button');
       btn.type = 'button';
@@ -105,7 +79,6 @@
       body.appendChild(btn);
       hasDesc = true;
     }
-
     if (options.buttons && options.buttons.length) {
       var actions = document.createElement('div');
       actions.className = options.actionsClass || 'aa-form-actions';
@@ -124,6 +97,71 @@
       body.appendChild(actions);
       hasDesc = true;
     }
+    return hasDesc;
+  }
+
+  function buildTabRow(h, options, state) {
+    var tab = document.createElement('div');
+    tab.className = 'aa-form-tab aa-pill-tab';
+
+    var badge = document.createElement('span');
+    badge.className = 'aa-form-badge';
+    badge.innerHTML = iconHtml(state, options.icon);
+    tab.appendChild(badge);
+
+    var titleText = options.title || options.message || '';
+    if (titleText) {
+      var titleEl = document.createElement('span');
+      titleEl.className = 'aa-form-tab-title';
+      titleEl.textContent = titleText;
+      h.applyClasses(titleEl, options, ['titleClass']);
+      tab.appendChild(titleEl);
+    }
+
+    var filL = document.createElement('span');
+    filL.className = 'aa-pill-fillet aa-pill-fillet-l';
+    filL.setAttribute('aria-hidden', 'true');
+    var filR = document.createElement('span');
+    filR.className = 'aa-pill-fillet aa-pill-fillet-r';
+    filR.setAttribute('aria-hidden', 'true');
+    tab.appendChild(filL);
+    tab.appendChild(filR);
+
+    return tab;
+  }
+
+  function buildMorphPill(h, options, state, anchor) {
+    var morph = document.createElement('div');
+    morph.className = 'aa-pill-morph';
+    morph.setAttribute('data-anchor', anchor);
+
+    var tab = buildTabRow(h, options, state);
+    var panel = document.createElement('div');
+    panel.className = 'aa-pill-panel';
+    var inner = document.createElement('div');
+    inner.className = 'aa-pill-panel-inner';
+    var hasDesc = appendFormContent(inner, h, options);
+    panel.appendChild(inner);
+
+    morph.appendChild(tab);
+    morph.appendChild(panel);
+    morph._hasBody = hasDesc;
+
+    if (options.fill) morph.style.setProperty('--aa-pill-fill', options.fill);
+    if (options.roundness != null) morph.style.setProperty('--aa-pill-round', options.roundness + 'px');
+    return morph;
+  }
+
+  function buildStack(h, options, state) {
+    var surface = document.createElement('div');
+    surface.className = 'aa-form-surface';
+
+    var tab = buildTabRow(h, options, state);
+    surface.appendChild(tab);
+
+    var body = document.createElement('div');
+    body.className = 'aa-form-body';
+    var hasDesc = appendFormContent(body, h, options);
 
     surface.appendChild(body);
     surface._hasBody = hasDesc;
@@ -157,7 +195,7 @@
     if (htmlEl && opts.html) htmlEl.innerHTML = opts.html;
 
     if (opts.fill) {
-      var surf = el.querySelector('.aa-form-surface');
+      var surf = el.querySelector('.aa-pill-morph, .aa-form-surface');
       if (surf) surf.style.setProperty('--aa-pill-fill', opts.fill);
     }
   }
@@ -203,10 +241,11 @@
       h.applyStyles(el, options.style);
 
       var surfaceOpts = mergeOpts(options, { _dismiss: function () { dismissToast(id, options.animationDuration || 320); } });
-      var surface = buildStack(h, surfaceOpts, state);
-      el.appendChild(surface);
+      var morph = buildMorphPill(h, surfaceOpts, state, position);
+      el.setAttribute('data-pill-anchor', position);
+      el.appendChild(morph);
 
-      if (surface._hasBody) el.classList.add('aa-pill-has-body');
+      if (morph._hasBody) el.classList.add('aa-pill-has-body');
       if (expandMode === 'auto' || expandMode === true) {
         setTimeout(function () {
           if (el.isConnected) el.classList.add('aa-pill-expanded');
