@@ -535,7 +535,55 @@
     setTheme: setTheme,
     getTheme: getTheme,
     configure: configure,
-    version: '1.2.0'
+    version: '1.4.0'
+  };
+
+  var _helpers = {
+    init: init,
+    ensureRoot: ensureRoot,
+    themedShell: themedShell,
+    getContainer: getContainer,
+    applyClasses: applyClasses,
+    applyStyles: applyStyles,
+    callFn: callFn,
+    normalizeType: normalizeType,
+    TYPES: TYPES,
+    POSITIONS: ['top-left', 'top-center', 'top-right', 'bottom-left', 'bottom-center', 'bottom-right']
+  };
+
+  if (typeof global.__auralertInstallForms === 'function') {
+    global.__auralertInstallForms(Auralert, _helpers);
+  }
+
+  /** shape: 'pill' | 'ribbon' | 'sheet' — formas alternativas con animaciones morph */
+  var _classicToast = toast;
+  var _classicBanner = banner;
+  var _classicModal = modal;
+
+  Auralert.toast = function (options) {
+    options = options || {};
+    if (options.shape === 'pill' && Auralert._forms) {
+      if (options.promise) return Auralert._forms.toastPromise(options.promise, options);
+      return Auralert._forms.toast(options);
+    }
+    return _classicToast(options);
+  };
+
+  Auralert.banner = function (options) {
+    options = options || {};
+    if (options.shape === 'ribbon' && Auralert._forms) {
+      return Auralert._forms.banner(options);
+    }
+    return _classicBanner(options);
+  };
+
+  Auralert.modal = function (options) {
+    options = options || {};
+    if (options.shape === 'sheet' && Auralert._forms) {
+      if (options.promise) return Auralert._forms.modalPromise(options.promise, options);
+      return Auralert._forms.modal(options);
+    }
+    return _classicModal(options);
   };
 
   if (typeof module !== 'undefined' && module.exports) {

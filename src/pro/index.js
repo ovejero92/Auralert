@@ -5,7 +5,7 @@
   'use strict';
 
   var PRO_STYLES = /* AURALERT_PRO_STYLES */ '';
-  var SKINS = ['glass', 'marble', 'gold', 'neon', 'aura'];
+  var SKINS = ['glass', 'marble', 'marble-dark', 'marble-cool', 'gold', 'neon', 'aura'];
   var ANIMATIONS = ['spring', 'glow', 'warp', 'electric', 'float', 'none'];
 
   var LICENSE_KEY = 'auralert_pro_license';
@@ -204,9 +204,15 @@
     };
   }
 
+  function formAuraTarget(el) {
+    if (!el) return el;
+    var stack = el.querySelector('.aa-form-surface');
+    return stack || el;
+  }
+
   function hookAuraDismiss(result, opts) {
     if (!result || !result.dismiss || !usesAuraSkin(opts)) return;
-    var auraCtrl = bindAuraToSurface(result.element, opts);
+    var auraCtrl = bindAuraToSurface(formAuraTarget(result.element), opts);
     var orig = result.dismiss;
     result.dismiss = function () {
       if (auraCtrl && auraCtrl.destroy) auraCtrl.destroy();
@@ -356,7 +362,7 @@
     configure: configure,
     skins: SKINS.slice(),
     animations: ANIMATIONS.slice(),
-    version: '1.0.1'
+    version: '1.1.0'
   };
 
   global.AuralertPro = AuralertPro;

@@ -12,6 +12,7 @@ const DIST = path.join(ROOT, 'dist');
 
 const CSS_FILES = [
   path.join(SRC, 'styles.css'),
+  path.join(SRC, 'forms', 'forms.css'),
   path.join(SRC, 'themes', 'light.css'),
   path.join(SRC, 'themes', 'dark.css'),
 ];
@@ -74,7 +75,8 @@ function main() {
   if (!fs.existsSync(DIST)) fs.mkdirSync(DIST, { recursive: true });
 
   const css = buildCssBundle();
-  let js = injectStyles(read(path.join(SRC, 'index.js')), css);
+  const formsPre = read(path.join(SRC, 'forms', 'icons.js')) + '\n' + read(path.join(SRC, 'forms', 'forms.js')) + '\n';
+  let js = formsPre + injectStyles(read(path.join(SRC, 'index.js')), css);
 
   const outFull = path.join(DIST, 'auralert.js');
   fs.writeFileSync(outFull, js, 'utf8');

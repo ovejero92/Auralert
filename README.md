@@ -55,6 +55,25 @@ Auralert.configure({
 | `Auralert.setTheme('light'\|'dark'\|'auto')` | Tema |
 | `Auralert.configure({ toast, modal, banner, notify, theme })` | Defaults globales |
 
+### Formas alternativas (v1.4+)
+
+| Componente | `shape` | Descripción |
+|------------|---------|-------------|
+| Toast | `'pill'` | Píldora moderna; expande al hover con `description` |
+| Banner | `'ribbon'` | Tarjeta centrada con acción |
+| Modal | `'sheet'` | Sheet superior; soporta `promise` |
+
+```javascript
+Auralert.toast({
+  shape: 'pill',
+  type: 'success',
+  title: 'Guardado',
+  description: 'Detalle al pasar el mouse',
+  position: 'top-right',
+  expand: 'hover'
+});
+```
+
 ### Opciones de personalización (todas las funciones)
 
 | Opción | Descripción |

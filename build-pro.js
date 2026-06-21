@@ -71,7 +71,12 @@ function main() {
   const secret = readSecret();
   const freeJs = read(freePath);
   const auraCss = read(path.join(ROOT, 'src', 'aura', 'aura.css'));
-  const proCss = read(path.join(PRO_SRC, 'skins.css')) + '\n' + auraCss;
+  const proCss =
+    read(path.join(PRO_SRC, 'skins.css')) +
+    '\n' +
+    read(path.join(PRO_SRC, 'form-skins.css')) +
+    '\n' +
+    auraCss;
   const auraKit = read(path.join(ROOT, 'src', 'aura', 'aura-kit.js'));
   let proJs = read(path.join(PRO_SRC, 'index.js'));
 
