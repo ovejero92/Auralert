@@ -75,7 +75,9 @@ function main() {
   if (!fs.existsSync(DIST)) fs.mkdirSync(DIST, { recursive: true });
 
   const css = buildCssBundle();
-  const formsPre = read(path.join(SRC, 'forms', 'icons.js')) + '\n' + read(path.join(SRC, 'forms', 'forms.js')) + '\n';
+  const formsPre = read(path.join(SRC, 'forms', 'icons.js')) + '\n' +
+    read(path.join(SRC, 'forms', 'pill-path.js')) + '\n' +
+    read(path.join(SRC, 'forms', 'forms.js')) + '\n';
   let js = formsPre + injectStyles(read(path.join(SRC, 'index.js')), css);
 
   const outFull = path.join(DIST, 'auralert.js');

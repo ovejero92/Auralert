@@ -100,9 +100,9 @@
     return hasDesc;
   }
 
-  function buildTabRow(h, options, state) {
+  function buildTabRow(h, options, state, withFillets) {
     var tab = document.createElement('div');
-    tab.className = 'aa-form-tab aa-pill-tab';
+    tab.className = 'aa-form-tab' + (withFillets ? ' aa-pill-tab' : '');
 
     var badge = document.createElement('span');
     badge.className = 'aa-form-badge';
@@ -118,15 +118,6 @@
       tab.appendChild(titleEl);
     }
 
-    var filL = document.createElement('span');
-    filL.className = 'aa-pill-fillet aa-pill-fillet-l';
-    filL.setAttribute('aria-hidden', 'true');
-    var filR = document.createElement('span');
-    filR.className = 'aa-pill-fillet aa-pill-fillet-r';
-    filR.setAttribute('aria-hidden', 'true');
-    tab.appendChild(filL);
-    tab.appendChild(filR);
-
     return tab;
   }
 
@@ -135,7 +126,19 @@
     morph.className = 'aa-pill-morph';
     morph.setAttribute('data-anchor', anchor);
 
-    var tab = buildTabRow(h, options, state);
+    var svgNS = 'http://www.w3.org/2000/svg';
+    var svg = document.createElementNS(svgNS, 'svg');
+    svg.setAttribute('class', 'aa-pill-svg');
+    svg.setAttribute('aria-hidden', 'true');
+    var bg = document.createElementNS(svgNS, 'path');
+    bg.setAttribute('class', 'aa-pill-svg-bg');
+    svg.appendChild(bg);
+    morph.appendChild(svg);
+
+    var layer = document.createElement('div');
+    layer.className = 'aa-pill-layer';
+
+    var tab = buildTabRow(h, options, state, true);
     var panel = document.createElement('div');
     panel.className = 'aa-pill-panel';
     var inner = document.createElement('div');
@@ -143,12 +146,14 @@
     var hasDesc = appendFormContent(inner, h, options);
     panel.appendChild(inner);
 
-    morph.appendChild(tab);
-    morph.appendChild(panel);
+    layer.appendChild(tab);
+    layer.appendChild(panel);
+    morph.appendChild(layer);
     morph._hasBody = hasDesc;
 
     if (options.fill) morph.style.setProperty('--aa-pill-fill', options.fill);
     if (options.roundness != null) morph.style.setProperty('--aa-pill-round', options.roundness + 'px');
+
     return morph;
   }
 
@@ -156,7 +161,7 @@
     var surface = document.createElement('div');
     surface.className = 'aa-form-surface';
 
-    var tab = buildTabRow(h, options, state);
+    var tab = buildTabRow(h, options, state, false);
     surface.appendChild(tab);
 
     var body = document.createElement('div');
@@ -257,6 +262,10 @@
       container.appendChild(el);
       h.callFn(options.onShow, el);
 
+      if (global.AA_PillPath && global.AA_PillPath.bindMorphLayout) {
+        global.AA_PillPath.bindMorphLayout(morph);
+      }
+
       function dismiss() {
         dismissToast(id, options.animationDuration || 320);
       }
@@ -294,6 +303,8 @@
             updateStackEl(toastRegistry[id].element, h, mergeOpts({ type: 'success', duration: DEFAULT_DURATION }, successOpts));
           }
           toastRegistry[id].element.classList.add('aa-pill-expanded');
+          var morphEl = toastRegistry[id].element.querySelector('.aa-pill-morph');
+          if (global.AA_PillPath && morphEl) global.AA_PillPath.layoutMorphPill(morphEl);
           if (toastRegistry[id].timer) clearTimeout(toastRegistry[id].timer);
           var d = successOpts.duration !== undefined ? successOpts.duration : DEFAULT_DURATION;
           if (d > 0) toastRegistry[id].timer = setTimeout(toastRegistry[id].dismiss, d);
