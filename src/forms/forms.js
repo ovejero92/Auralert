@@ -121,6 +121,36 @@
     return tab;
   }
 
+  function applyFormTextColors(root, options) {
+    var morph = root.querySelector ? root.querySelector('.aa-pill-morph, .aa-form-surface') : null;
+    if (!morph && root.classList && (root.classList.contains('aa-pill-morph') || root.classList.contains('aa-form-surface'))) {
+      morph = root;
+    }
+    if (!morph) return;
+
+    var titleColor = options.titleColor;
+    var descColor = options.descriptionColor || options.descColor || options.messageColor;
+
+    if (options.colors && typeof options.colors === 'object') {
+      if (options.colors.title) titleColor = options.colors.title;
+      if (options.colors.description || options.colors.desc) {
+        descColor = options.colors.description || options.colors.desc;
+      }
+    }
+
+    if (options.textColor) {
+      if (!titleColor) titleColor = options.textColor;
+      if (!descColor) descColor = options.textColor;
+    }
+
+    if (titleColor) morph.style.setProperty('--aa-pill-title-color', titleColor);
+    if (descColor) morph.style.setProperty('--aa-pill-desc-color', descColor);
+    if (options.titleShadow) morph.style.setProperty('--aa-pill-title-shadow', options.titleShadow);
+    if (options.descriptionShadow || options.descShadow) {
+      morph.style.setProperty('--aa-pill-desc-shadow', options.descriptionShadow || options.descShadow);
+    }
+  }
+
   function buildMorphPill(h, options, state, anchor) {
     var morph = document.createElement('div');
     morph.className = 'aa-pill-morph';
@@ -153,6 +183,7 @@
 
     if (options.fill) morph.style.setProperty('--aa-pill-fill', options.fill);
     if (options.roundness != null) morph.style.setProperty('--aa-pill-round', options.roundness + 'px');
+    applyFormTextColors(morph, options);
 
     return morph;
   }
@@ -172,6 +203,7 @@
     surface._hasBody = hasDesc;
     if (options.fill) surface.style.setProperty('--aa-pill-fill', options.fill);
     if (options.roundness != null) surface.style.setProperty('--aa-pill-round', options.roundness + 'px');
+    applyFormTextColors(surface, options);
     return surface;
   }
 
@@ -202,6 +234,12 @@
     if (opts.fill) {
       var surf = el.querySelector('.aa-pill-morph, .aa-form-surface');
       if (surf) surf.style.setProperty('--aa-pill-fill', opts.fill);
+    }
+    applyFormTextColors(el, opts);
+
+    var morph = el.querySelector('.aa-pill-morph');
+    if (morph && global.AA_PillPath && global.AA_PillPath.layoutMorphPill) {
+      global.AA_PillPath.layoutMorphPill(morph);
     }
   }
 

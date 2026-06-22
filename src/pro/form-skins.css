@@ -50,7 +50,6 @@
     linear-gradient(152deg, #fdfbf6 0%, #f9f4ec 28%, #faf6ef 52%, #f3ebe0 78%, #f7f1e8 100%);
   --aa-pill-fill: #faf6ef;
   --aa-pill-border: rgba(188, 168, 142, 0.65);
-  --aa-pill-title: #1f1b17;
   --aa-pill-desc: rgba(44, 40, 36, 0.82);
 }
 
@@ -71,9 +70,7 @@
     linear-gradient(155deg, #141210 0%, #0a0908 35%, #111010 65%, #060606 100%);
   --aa-pill-fill: #0a0908;
   --aa-pill-border: rgba(212, 175, 55, 0.45);
-  --aa-pill-title: #fff8e8;
   --aa-pill-desc: rgba(245, 237, 216, 0.82);
-  --aa-pill-accent: #ffd700;
 }
 
 .auralert-root.aa-pro[data-aa-skin="marble-dark"] .aa-form-surface {
@@ -93,7 +90,6 @@
     linear-gradient(148deg, #fdfdfd 0%, #f8f8f7 30%, #fafafa 55%, #f0f0ee 100%);
   --aa-pill-fill: #fafafa;
   --aa-pill-border: rgba(180, 180, 178, 0.55);
-  --aa-pill-title: #1a1a18;
   --aa-pill-desc: rgba(42, 42, 40, 0.82);
 }
 
@@ -104,28 +100,64 @@
   box-shadow: 0 14px 36px rgba(40, 40, 38, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
 }
 
-/* ── Glass ── */
-.auralert-root.aa-pro[data-aa-skin="glass"] .aa-pill-morph,
+/* ── Glass — vidrio real en pill (sin textura ruidosa) ── */
+.auralert-root.aa-pro[data-aa-skin="glass"] .aa-pill-morph {
+  --aa-pill-fill: rgba(255, 255, 255, 0.1);
+  --aa-pill-surface: linear-gradient(
+    148deg,
+    rgba(255, 255, 255, 0.28) 0%,
+    rgba(255, 255, 255, 0.06) 42%,
+    rgba(255, 255, 255, 0.16) 100%
+  );
+  --aa-pill-border: rgba(255, 255, 255, 0.52);
+  --aa-pill-desc: #1e293b;
+  backdrop-filter: blur(22px) saturate(1.65) brightness(1.08);
+  -webkit-backdrop-filter: blur(22px) saturate(1.65) brightness(1.08);
+}
+
+.auralert-root.aa-pro[data-aa-skin="glass"] .aa-pill-morph::before {
+  background: var(--aa-pill-surface);
+}
+
+.auralert-root.aa-pro[data-aa-skin="glass"] .aa-pill-morph::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  clip-path: var(--aa-pill-clip, none);
+  -webkit-clip-path: var(--aa-pill-clip, none);
+  background:
+    linear-gradient(128deg, transparent 36%, rgba(255, 255, 255, 0.42) 44%, rgba(255, 255, 255, 0.1) 50%, transparent 58%),
+    radial-gradient(ellipse 90% 70% at 50% 45%, rgba(255, 255, 255, 0.14) 0%, transparent 68%);
+  opacity: 0.85;
+}
+
+.auralert-root.aa-pro[data-aa-skin="glass"] .aa-pill-svg-bg {
+  fill: rgba(255, 255, 255, 0.08);
+  stroke: rgba(255, 255, 255, 0.5);
+}
+
+.auralert-root.aa-pro[data-aa-skin="glass"] .aa-toast--pill[data-type] .aa-form-tab-title {
+  text-shadow:
+    var(--aa-pill-title-shadow, 0 0 12px rgba(255, 255, 255, 0.9)),
+    0 0 18px var(--aa-pill-type-glow, transparent) !important;
+}
+
+.auralert-root.aa-pro[data-aa-skin="glass"] .aa-toast--pill[data-type] .aa-form-desc {
+  text-shadow:
+    var(--aa-pill-desc-shadow, 0 0 10px rgba(255, 255, 255, 0.75)) !important;
+}
+
 .auralert-root.aa-pro[data-aa-skin="glass"] .aa-form-surface {
-  --aa-pill-surface:
-    repeating-radial-gradient(circle at 30% 24%, rgba(255, 255, 255, 0.14) 0 0.55px, transparent 0.55px 2.6px),
-    repeating-radial-gradient(circle at 70% 66%, rgba(255, 255, 255, 0.1) 0 0.45px, transparent 0.45px 2.2px),
-    repeating-linear-gradient(118deg, transparent 0 5px, rgba(255, 255, 255, 0.06) 5px 6px, transparent 6px 13px),
+  --aa-glass-surface:
     radial-gradient(ellipse 95% 85% at 50% 42%, rgba(255, 255, 255, 0.32) 0%, rgba(255, 255, 255, 0.1) 52%, transparent 78%),
-    linear-gradient(148deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.07) 42%, rgba(255, 255, 255, 0.14) 100%);
-  --aa-pill-fill: rgba(255, 255, 255, 0.12);
+    linear-gradient(148deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0.07) 42%, rgba(255, 255, 255, 0.14) 100%);
+  --aa-pill-fill: rgba(255, 255, 255, 0.1);
   --aa-pill-border: rgba(255, 255, 255, 0.48);
   --aa-pill-title: #0f172a;
   --aa-pill-desc: #1e293b;
-}
-
-.auralert-root.aa-pro[data-aa-skin="glass"] .aa-pill-morph {
-  backdrop-filter: blur(22px) saturate(1.75) brightness(1.06);
-  -webkit-backdrop-filter: blur(22px) saturate(1.75) brightness(1.06);
-}
-
-.auralert-root.aa-pro[data-aa-skin="glass"] .aa-form-surface {
-  background: var(--aa-pill-surface) !important;
+  background: var(--aa-glass-surface) !important;
   background-color: rgba(255, 255, 255, 0.1) !important;
   backdrop-filter: blur(22px) saturate(1.75) brightness(1.06);
   -webkit-backdrop-filter: blur(22px) saturate(1.75) brightness(1.06);
@@ -134,11 +166,12 @@
 }
 
 .auralert-root.aa-pro[data-aa-skin="glass"] .aa-form-tab-title {
-  text-shadow: none !important;
+  text-shadow: 0 0 12px rgba(255, 255, 255, 0.9) !important;
 }
 
 .auralert-root.aa-pro[data-aa-skin="glass"] .aa-form-desc {
   color: #1e293b !important;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.75) !important;
 }
 
 /* ── Oro ── */
@@ -147,9 +180,7 @@
   --aa-pill-surface: linear-gradient(152deg, #a67c00 0%, #ffd700 35%, #fff5b7 50%, #daa520 100%);
   --aa-pill-fill: #ffd700;
   --aa-pill-border: rgba(139, 90, 20, 0.65);
-  --aa-pill-title: #1a0f06;
   --aa-pill-desc: rgba(42, 24, 8, 0.88);
-  --aa-pill-accent: #5d3a00;
 }
 
 .auralert-root.aa-pro[data-aa-skin="gold"] .aa-form-surface {
@@ -164,9 +195,7 @@
   --aa-pill-surface: #06060e;
   --aa-pill-fill: #06060e;
   --aa-pill-border: rgba(0, 245, 255, 0.45);
-  --aa-pill-title: #f0f4ff;
   --aa-pill-desc: rgba(232, 236, 255, 0.88);
-  --aa-pill-accent: #00f5ff;
 }
 
 .auralert-root.aa-pro[data-aa-skin="neon"] .aa-form-surface {
@@ -185,9 +214,7 @@
   --aa-pill-surface: linear-gradient(160deg, #0c0618, #06030c);
   --aa-pill-fill: #0c0618;
   --aa-pill-border: rgba(111, 63, 255, 0.45);
-  --aa-pill-title: #e8deff;
   --aa-pill-desc: rgba(232, 222, 255, 0.78);
-  --aa-pill-accent: #9060ff;
 }
 
 .auralert-root.aa-pro[data-aa-skin="aura"] .aa-form-surface {

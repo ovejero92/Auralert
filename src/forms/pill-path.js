@@ -23,7 +23,7 @@
   }
 
   function pathTop(tabX, tabW, tabH, panelW, panelH, pr, fillet) {
-    var seam = tabH / 2;
+    var seam = tabH;
     var tr = tabH / 2;
     var tx = tabX;
     var tw = tabW;
@@ -84,7 +84,7 @@
   }
 
   function tabXForAnchor(anchor, panelW, tabW) {
-    var pad = 14;
+    var pad = 16;
     if (anchor.indexOf('left') >= 0) return pad;
     if (anchor.indexOf('right') >= 0) return Math.max(pad, panelW - tabW - pad);
     return Math.max(pad, (panelW - tabW) / 2);
@@ -104,14 +104,42 @@
     tab.style.left = '';
     tab.style.top = '';
     tab.style.transform = 'none';
-    return {
-      w: Math.max(tab.offsetWidth, 80),
-      h: Math.max(tab.offsetHeight, 38)
-    };
+    tab.style.width = 'max-content';
+    tab.style.maxWidth = 'none';
+
+    var title = tab.querySelector('.aa-form-tab-title');
+    if (title) {
+      title.style.overflow = 'visible';
+      title.style.textOverflow = 'unset';
+      title.style.maxWidth = 'none';
+    }
+
+    var w = Math.max(tab.scrollWidth, tab.offsetWidth, 80);
+    var h = Math.max(tab.offsetHeight, 38);
+
+    tab.style.width = '';
+    tab.style.maxWidth = '';
+    if (title) {
+      title.style.overflow = '';
+      title.style.textOverflow = '';
+      title.style.maxWidth = '';
+    }
+
+    return { w: w, h: h };
   }
 
   function defaultPanelWidth(tabW) {
-    return Math.max(300, Math.min(380, tabW + 160));
+    return Math.max(280, Math.min(360, tabW + 140));
+  }
+
+  function measurePanelHeight(panel, panelW) {
+    panel.style.visibility = 'visible';
+    panel.style.position = 'static';
+    panel.style.width = panelW + 'px';
+    panel.style.maxHeight = 'none';
+    panel.style.opacity = '1';
+    panel.style.pointerEvents = 'auto';
+    return Math.max(panel.scrollHeight, 48);
   }
 
   function layoutMorphPill(morph) {
@@ -124,26 +152,23 @@
     var bg = morph.querySelector('.aa-pill-svg-bg');
     if (!tab || !svg || !bg) return;
 
-    var pr = 20;
-    var fillet = 10;
+    var pr = 18;
+    var fillet = 12;
     var expanded = isExpanded(morph);
     var tabSize = measureTab(tab);
     var tabW = tabSize.w;
     var tabH = tabSize.h;
     var panelW = defaultPanelWidth(tabW);
-    var panelH = 72;
+    var panelH = 48;
     var d;
     var totalW;
     var totalH;
 
+    morph.style.setProperty('--aa-pill-tab-h', tabH + 'px');
+    morph.style.setProperty('--aa-pill-seam', tabH + 'px');
+
     if (expanded && panel) {
-      panel.style.visibility = 'visible';
-      panel.style.position = 'static';
-      panel.style.width = panelW + 'px';
-      panel.style.maxHeight = 'none';
-      panel.style.opacity = '1';
-      panel.style.pointerEvents = 'auto';
-      panelH = Math.max(panel.scrollHeight, 56);
+      panelH = measurePanelHeight(panel, panelW);
     } else if (panel) {
       panel.style.visibility = 'hidden';
       panel.style.position = 'absolute';
@@ -151,6 +176,9 @@
       panel.style.width = panelW + 'px';
       panel.style.opacity = '0';
       panel.style.pointerEvents = 'none';
+      tab.style.height = '';
+      tab.style.maxHeight = '';
+      tab.style.overflow = '';
     }
 
     if (!expanded) {
@@ -166,21 +194,21 @@
       if (anchor.indexOf('top') === 0) {
         d = pathTop(tx, tabW, tabH, panelW, panelH, pr, fillet);
         totalW = panelW;
-        totalH = tabH / 2 + panelH;
+        totalH = tabH + panelH;
         tab.style.position = 'absolute';
         tab.style.left = tx + 'px';
         tab.style.top = '0';
         tab.style.transform = 'none';
         panel.style.position = 'absolute';
         panel.style.left = '0';
-        panel.style.top = tabH / 2 + 'px';
+        panel.style.top = tabH + 'px';
         panel.style.width = panelW + 'px';
         panel.style.visibility = 'visible';
         panel.style.opacity = '1';
       } else {
         d = pathBottom(tx, tabW, tabH, panelW, panelH, pr, fillet);
         totalW = panelW;
-        totalH = panelH + tabH / 2;
+        totalH = panelH + tabH;
         tab.style.position = 'absolute';
         tab.style.left = tx + 'px';
         tab.style.top = panelH + 'px';

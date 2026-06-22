@@ -142,11 +142,18 @@
     if (isModern) {
       if (state.component === 'toast') {
         opts.shape = 'pill';
-        opts.title = state.type === 'success' ? 'Cambios guardados' : state.type === 'error' ? 'Algo salió mal' : 'Aviso';
+        opts.title = state.type === 'success' ? 'Cambios guardados'
+          : state.type === 'error' ? 'Algo salió mal'
+          : state.type === 'warning' ? 'Atención requerida'
+          : 'Información';
         opts.description = 'Detalle adicional. Pasá el mouse para expandir.';
         opts.position = state.position;
         opts.expand = 'hover';
         opts.duration = 8000;
+        if (state.skin === 'glass') {
+          opts.titleColor = state.type === 'error' ? '#dc2626' : state.type === 'warning' ? '#b45309' : '#047857';
+          opts.descriptionColor = '#1e293b';
+        }
       } else if (state.component === 'banner') {
         opts.shape = 'ribbon';
         opts.title = 'Archivo subido';
@@ -190,6 +197,8 @@
       var v = opts[k];
       if (k === 'button' && typeof v === 'object') {
         lines.push("  button: { title: '" + v.title + "', onClick: " + v.onClick + ' },');
+      } else if (k === 'colors' && typeof v === 'object') {
+        lines.push('  colors: ' + JSON.stringify(v) + ',');
       } else if (typeof v === 'string') {
         lines.push("  " + k + ": '" + v.replace(/'/g, "\\'") + "',");
       } else if (typeof v === 'number' || typeof v === 'boolean') {
